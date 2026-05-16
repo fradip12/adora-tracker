@@ -6,6 +6,7 @@ abstract class WizardPermissionState with _$WizardPermissionState {
     @Default(false) bool active,
     @Default(0) int currentStep,
     @Default(false) bool locationGranted,
+    @Default(false) bool notificationGranted,
     @Default(false) bool isRequestingPermission,
     @Default(false) bool isComplete,
   }) = _WizardPermissionState;

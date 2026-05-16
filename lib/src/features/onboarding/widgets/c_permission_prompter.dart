@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
@@ -60,7 +62,9 @@ class PermissionPrompterState extends State<PermissionPrompter>
 
   @override
   Widget build(BuildContext context) {
-    final data = locationPermission(context);
+    final data = (Platform.isIOS && widget.index == 1)
+        ? notificationPermission(context)
+        : locationPermission(context);
 
     return Column(
       mainAxisSize: .min,

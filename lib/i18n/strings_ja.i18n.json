@@ -16,7 +16,10 @@
   "permission": {
     "locationTitle": "位置情報へのアクセスを許可",
     "locationDescription": "お子様の位置情報を共有することで、いつでも安全を確認できます。",
-    "locationButton": "位置情報を許可"
+    "locationButton": "位置情報を許可",
+    "notificationTitle": "通知を許可",
+    "notificationDescription": "お子様の到着・出発や緊急時にすぐアラートを受け取れます。",
+    "notificationButton": "通知を許可"
   },
   "home": {
     "tracker": "トラッカー",

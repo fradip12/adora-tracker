@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -20,10 +22,14 @@ class WizardPermissionBloc
   WizardPermissionBloc(this._prefs) : super(const WizardPermissionState()) {
     on<_Init>((event, emit) async {
       final loc = await Permission.locationWhenInUse.status;
+      final notif = Platform.isIOS
+          ? await Permission.notification.status
+          : PermissionStatus.granted;
       emit(
         WizardPermissionState(
           active: true,
           locationGranted: loc.isGranted || loc.isLimited,
+          notificationGranted: notif.isGranted,
         ),
       );
     });
@@ -35,6 +41,8 @@ class WizardPermissionBloc
 
       if (event.slideIndex == 0) {
         await _requestLocation(emit);
+      } else if (event.slideIndex == 1 && Platform.isIOS) {
+        await _requestNotification(emit);
       }
 
       emit(state.copyWith(isRequestingPermission: false));
@@ -44,7 +52,15 @@ class WizardPermissionBloc
       if (!state.active) return;
 
       final loc = await Permission.locationWhenInUse.status;
-      emit(state.copyWith(locationGranted: loc.isGranted || loc.isLimited));
+      final notif = Platform.isIOS
+          ? await Permission.notification.status
+          : PermissionStatus.granted;
+      emit(
+        state.copyWith(
+          locationGranted: loc.isGranted || loc.isLimited,
+          notificationGranted: notif.isGranted,
+        ),
+      );
     });
 
     on<_NextStep>((event, emit) {
@@ -75,6 +91,18 @@ class WizardPermissionBloc
       emit(
         state.copyWith(locationGranted: status.isGranted || status.isLimited),
       );
+    }
+  }
+
+  Future<void> _requestNotification(Emitter<WizardPermissionState> emit) async {
+    final current = await Permission.notification.status;
+    if (current.isPermanentlyDenied) {
+      await openAppSettings();
+      return;
+    }
+    final status = await Permission.notification.request();
+    if (state.active) {
+      emit(state.copyWith(notificationGranted: status.isGranted));
     }
   }
 }

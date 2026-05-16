@@ -23,3 +23,10 @@ PermissionData locationPermission(BuildContext context) => PermissionData(
   description: context.t.permission.locationDescription,
   button: context.t.permission.locationButton,
 );
+
+PermissionData notificationPermission(BuildContext context) => PermissionData(
+  icon: LucideIcons.bell,
+  title: context.t.permission.notificationTitle,
+  description: context.t.permission.notificationDescription,
+  button: context.t.permission.notificationButton,
+);

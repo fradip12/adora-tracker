@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:animations/animations.dart';
@@ -55,6 +56,7 @@ class _WizardViewState extends State<_WizardView>
 
   bool _isStepGranted(WizardPermissionState active, int step) {
     if (step == 0) return active.locationGranted;
+    if (Platform.isIOS && step == 1) return active.notificationGranted;
     return true;
   }
 

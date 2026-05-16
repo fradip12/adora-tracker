@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../core/components/theme/app_colors.dart';
@@ -16,18 +18,29 @@ class SlideData {
   final bool dark;
 }
 
-/// Slide 0 = location permission, Slide 1 = ready screen (same for all platforms).
-const wizardSlides = [
-  SlideData(
-    bg: AppColors.primaryDark,
-    btn: Colors.white,
-    icon: AppColors.primaryDark,
-    dark: true,
-  ),
-  SlideData(
-    bg: Colors.white,
-    btn: AppColors.primaryDark,
-    icon: Colors.white,
-    dark: false,
-  ),
+const _locationSlide = SlideData(
+  bg: AppColors.primaryDark,
+  btn: Colors.white,
+  icon: AppColors.primaryDark,
+  dark: true,
+);
+
+const _notificationSlide = SlideData(
+  bg: AppColors.primary,
+  btn: Colors.white,
+  icon: AppColors.primary,
+  dark: true,
+);
+
+const _readySlide = SlideData(
+  bg: Colors.white,
+  btn: AppColors.primaryDark,
+  icon: Colors.white,
+  dark: false,
+);
+
+List<SlideData> get wizardSlides => [
+  _locationSlide,
+  if (Platform.isIOS) _notificationSlide,
+  _readySlide,
 ];

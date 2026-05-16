@@ -16,7 +16,10 @@
   "permission": {
     "locationTitle": "Allow Location access",
     "locationDescription": "Share your child's location so you always know they're safe and where they need to be.",
-    "locationButton": "Allow Location"
+    "locationButton": "Allow Location",
+    "notificationTitle": "Allow Notifications",
+    "notificationDescription": "Get instant alerts when your child arrives, leaves, or needs your attention.",
+    "notificationButton": "Allow Notifications"
   },
   "home": {
     "tracker": "Tracker",
