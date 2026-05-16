@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../../../core/data/database/coordinate_dao.dart';
 import '../../../core/data/models/coordinate_record.dart';
@@ -102,6 +103,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
           position: pos,
           todayPoints: _sessionPoints,
           todayDistanceM: _sessionDistanceM,
+          trackPoints: [...s.trackPoints, LatLng(pos.latitude, pos.longitude)],
         ),
       );
     }
@@ -128,7 +130,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
         }, onError: (_) {});
 
     final s = state.mapOrNull(active: (a) => a);
-    if (s != null) emit(s.copyWith(isTracking: true));
+    if (s != null) emit(s.copyWith(isTracking: true, trackPoints: []));
   }
 
   void _stop(Emitter<TrackerState> emit) {
@@ -139,7 +141,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
     _lastPosition = null;
 
     final s = state.mapOrNull(active: (a) => a);
-    if (s != null) emit(s.copyWith(isTracking: false));
+    if (s != null) emit(s.copyWith(isTracking: false, trackPoints: []));
   }
 
   double _totalDistance(List<CoordinateRecord> records) {

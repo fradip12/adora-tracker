@@ -10,5 +10,6 @@ abstract class TrackerState with _$TrackerState {
     @Default(0) int todayPoints,
     @Default(0.0) double todayDistanceM,
     @Default(0) int todayDurationSeconds,
+    @Default([]) List<LatLng> trackPoints,
   }) = _Active;
 }

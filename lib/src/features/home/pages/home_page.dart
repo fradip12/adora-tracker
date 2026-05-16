@@ -38,6 +38,7 @@ class HomePage extends StatelessWidget {
                   child: HomeMapSection(
                     height: mapHeight,
                     position: position,
+                    trackPoints: active?.trackPoints ?? const [],
                   ),
                 ),
                 Flexible(flex: 2, child: HomeCoordCard(position: position)),

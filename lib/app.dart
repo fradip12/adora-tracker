@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:toastification/toastification.dart';
 
 import 'i18n/strings.g.dart';
 import 'src/core/config/app_router.dart';
@@ -31,6 +32,8 @@ class _AdoraAppState extends State<AdoraApp> {
           supportedLocales: AppLocaleUtils.supportedLocales,
           localizationsDelegates: GlobalMaterialLocalizations.delegates,
           routerConfig: _appRouter.config(),
+          builder: (context, child) =>
+              ToastificationWrapper(child: child ?? const SizedBox.shrink()),
         ),
       ),
     );
