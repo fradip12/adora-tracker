@@ -1,0 +1,39 @@
+{
+  "intro": {
+    "slide1Title": "スマートな安全",
+    "slide1Desc": "AIがお子様のデバイスで有害なコンテンツをスキャンします。完全にオンデバイスで処理され、プライバシーは守られます。",
+    "slide2Title": "常につながる",
+    "slide2Desc": "リアルタイムの位置情報共有で、お子様がどこにいても安全を確認できます。",
+    "slide3Title": "完全な安心",
+    "slide3Desc": "オンラインと現実世界でお子様を守る一つのアプリ。シンプルで強力、信頼できます。",
+    "getStarted": "はじめる",
+    "skip": "スキップ"
+  },
+  "wizard": {
+    "readyTitle": "準備完了です",
+    "readySubtitle": "Adoraがお子様を見守る準備ができました。"
+  },
+  "permission": {
+    "locationTitle": "位置情報へのアクセスを許可",
+    "locationDescription": "お子様の位置情報を共有することで、いつでも安全を確認できます。",
+    "locationButton": "位置情報を許可"
+  },
+  "home": {
+    "tracker": "トラッカー",
+    "trackingActive": "バックグラウンドで追跡中",
+    "trackingPaused": "追跡一時停止中",
+    "backgroundTracking": "バックグラウンド追跡",
+    "backgroundTrackingDesc": "アプリを最小化しても続行します",
+    "statPoints": "ポイント",
+    "statToday": "今日",
+    "statDuration": "時間",
+    "currentPosition": "現在地",
+    "labelLatitude": "緯度",
+    "labelLongitude": "経度",
+    "accuracyMeters": "精度±${meters}m",
+    "accuracyUnknown": "-- 精度不明",
+    "justNow": "たった今",
+    "noSignal": "信号なし",
+    "gps": "GPS"
+  }
+}

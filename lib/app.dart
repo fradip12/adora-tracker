@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'i18n/strings.g.dart';
+import 'src/core/config/app_router.dart';
+
+class AdoraApp extends StatefulWidget {
+  const AdoraApp({super.key});
+
+  @override
+  State<AdoraApp> createState() => _AdoraAppState();
+}
+
+class _AdoraAppState extends State<AdoraApp> {
+  late final AppRouter _appRouter;
+
+  @override
+  void initState() {
+    super.initState();
+    _appRouter = AppRouter();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TranslationProvider(
+      child: Builder(
+        builder: (ctx) => MaterialApp.router(
+          title: 'Adora',
+          debugShowCheckedModeBanner: false,
+          locale: TranslationProvider.of(ctx).flutterLocale,
+          supportedLocales: AppLocaleUtils.supportedLocales,
+          localizationsDelegates: GlobalMaterialLocalizations.delegates,
+          routerConfig: _appRouter.config(),
+        ),
+      ),
+    );
+  }
+}

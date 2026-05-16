@@ -1,0 +1,10 @@
+part of 'tracker_bloc.dart';
+
+@freezed
+sealed class TrackerEvent with _$TrackerEvent {
+  const factory TrackerEvent.init() = _Init;
+  const factory TrackerEvent.toggleTracking() = _ToggleTracking;
+  const factory TrackerEvent.tick() = _Tick;
+  const factory TrackerEvent.positionUpdate(Position position) =
+      _PositionUpdate;
+}

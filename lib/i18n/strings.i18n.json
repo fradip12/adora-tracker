@@ -1,0 +1,39 @@
+{
+  "intro": {
+    "slide1Title": "Smart Safety",
+    "slide1Desc": "AI scans your child's device for harmful content — fully on-device, completely private.",
+    "slide2Title": "Always Connected",
+    "slide2Desc": "Real-time location sharing so you always know your child is safe, wherever they are.",
+    "slide3Title": "Complete Peace",
+    "slide3Desc": "One app to protect your child online and in the real world. Simple, powerful, trusted.",
+    "getStarted": "Get Started",
+    "skip": "Skip"
+  },
+  "wizard": {
+    "readyTitle": "You are ready to go",
+    "readySubtitle": "Adora is all set and watching over your child."
+  },
+  "permission": {
+    "locationTitle": "Allow Location access",
+    "locationDescription": "Share your child's location so you always know they're safe and where they need to be.",
+    "locationButton": "Allow Location"
+  },
+  "home": {
+    "tracker": "Tracker",
+    "trackingActive": "Background tracking active",
+    "trackingPaused": "Tracking paused",
+    "backgroundTracking": "Background Tracking",
+    "backgroundTrackingDesc": "Continue when app is minimized",
+    "statPoints": "Points",
+    "statToday": "Today",
+    "statDuration": "Duration",
+    "currentPosition": "CURRENT POSITION",
+    "labelLatitude": "LATITUDE",
+    "labelLongitude": "LONGITUDE",
+    "accuracyMeters": "±${meters}m accuracy",
+    "accuracyUnknown": "-- accuracy",
+    "justNow": "Just now",
+    "noSignal": "No signal",
+    "gps": "GPS"
+  }
+}
