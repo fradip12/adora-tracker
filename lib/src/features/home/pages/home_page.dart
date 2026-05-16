@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/components/theme/app_spacing.dart';
-import '../../../core/config/app_di.dart';
 import '../managers/tracker_bloc.dart';
 import '../widgets/c_home_coord_card.dart';
 import '../widgets/c_home_map_section.dart';
 import '../widgets/c_home_stats_mini.dart';
 import '../widgets/c_home_tracking_chip.dart';
-import '../widgets/c_home_tracking_toggle_row.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget {
@@ -20,57 +18,46 @@ class HomePage extends StatelessWidget {
     final screenH = MediaQuery.sizeOf(context).height;
     final mapHeight = screenH * 0.3;
 
-    return BlocProvider(
-      create: (_) => locator<TrackerBloc>()..add(const TrackerEvent.init()),
-      child: BlocBuilder<TrackerBloc, TrackerState>(
-        builder: (context, state) {
-          final active = state.mapOrNull(active: (s) => s);
-          final position = active?.position;
-          final isTracking = active?.isTracking ?? false;
+    return BlocBuilder<TrackerBloc, TrackerState>(
+      builder: (context, state) {
+        final active = state.mapOrNull(active: (s) => s);
+        final position = active?.position;
+        final isTracking = active?.isTracking ?? false;
 
-          return Padding(
-            padding: .all(context.m),
-            child: SafeArea(
-              bottom: false,
-              child: Column(
-                crossAxisAlignment: .stretch,
-                spacing: context.s,
-                children: [
-                  Flexible(child: HomeTrackingChip(isTracking: isTracking)),
-                  Flexible(
-                    flex: 3,
-                    child: HomeMapSection(
-                      height: mapHeight,
-                      position: position,
-                    ),
+        return Padding(
+          padding: .all(context.m),
+          child: SafeArea(
+            bottom: false,
+            child: Column(
+              crossAxisAlignment: .stretch,
+              spacing: context.s,
+              children: [
+                Flexible(child: HomeTrackingChip(isTracking: isTracking)),
+                Flexible(
+                  flex: 3,
+                  child: HomeMapSection(
+                    height: mapHeight,
+                    position: position,
                   ),
-                  Flexible(flex: 2, child: HomeCoordCard(position: position)),
-                  Flexible(
-                    child: HomeTrackingToggleRow(
-                      isTracking: isTracking,
-                      onToggle: () => context.read<TrackerBloc>().add(
-                        const TrackerEvent.toggleTracking(),
-                      ),
-                    ),
+                ),
+                Flexible(flex: 2, child: HomeCoordCard(position: position)),
+                Flexible(
+                  child: HomeStatsMini(
+                    points: active?.todayPoints ?? 0,
+                    distanceM: active?.todayDistanceM ?? 0,
+                    durationSeconds: active?.todayDurationSeconds ?? 0,
                   ),
-                  Flexible(
-                    child: HomeStatsMini(
-                      points: active?.todayPoints ?? 0,
-                      distanceM: active?.todayDistanceM ?? 0,
-                      durationSeconds: active?.todayDurationSeconds ?? 0,
-                    ),
+                ),
+                Flexible(
+                  child: SizedBox(
+                    height: MediaQuery.paddingOf(context).bottom + 88,
                   ),
-                  Flexible(
-                    child: SizedBox(
-                      height: MediaQuery.paddingOf(context).bottom,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

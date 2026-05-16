@@ -19,37 +19,34 @@ class CPillNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: const .only(bottom: 24),
-        child: Align(
-          alignment: .bottomCenter,
-          child: Container(
-            height: 52,
-            padding: const .all(7),
-            decoration: BoxDecoration(
-              color: AppColors.navBg,
-              borderRadius: .circular(26),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.25),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
+      child: Align(
+        alignment: .bottomCenter,
+        child: Container(
+          height: 52,
+          padding: const .all(7),
+          decoration: BoxDecoration(
+            color: AppColors.navBg,
+            borderRadius: .circular(26),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisSize: .min,
+            children: [
+              for (int i = 0; i < _icons.length; i++) ...[
+                if (i > 0) const SizedBox(width: 4),
+                _NavItem(
+                  icon: _icons[i],
+                  active: tabsRouter.activeIndex == i,
+                  onTap: () => tabsRouter.setActiveIndex(i),
                 ),
               ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (int i = 0; i < _icons.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 4),
-                  _NavItem(
-                    icon: _icons[i],
-                    active: tabsRouter.activeIndex == i,
-                    onTap: () => tabsRouter.setActiveIndex(i),
-                  ),
-                ],
-              ],
-            ),
+            ],
           ),
         ),
       ),
