@@ -1,13 +1,19 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/components/theme/app_colors.dart';
 
 class CPillNavBar extends StatelessWidget {
-  const CPillNavBar({required this.tabsRouter, super.key});
+  const CPillNavBar({
+    required this.activeIndex,
+    required this.onTabTap,
+    super.key,
+  });
 
-  final TabsRouter tabsRouter;
+  final int activeIndex;
+  final ValueChanged<int> onTabTap;
+
+  static const double barHeight = 52.0;
 
   static const _icons = [
     LucideIcons.layoutDashboard,
@@ -22,7 +28,7 @@ class CPillNavBar extends StatelessWidget {
       child: Align(
         alignment: .bottomCenter,
         child: Container(
-          height: 52,
+          height: barHeight,
           padding: const .all(7),
           decoration: BoxDecoration(
             color: AppColors.navBg,
@@ -42,8 +48,8 @@ class CPillNavBar extends StatelessWidget {
                 if (i > 0) const SizedBox(width: 4),
                 _NavItem(
                   icon: _icons[i],
-                  active: tabsRouter.activeIndex == i,
-                  onTap: () => tabsRouter.setActiveIndex(i),
+                  active: activeIndex == i,
+                  onTap: () => onTabTap(i),
                 ),
               ],
             ],
@@ -54,7 +60,7 @@ class CPillNavBar extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatefulWidget {
+class _NavItem extends StatelessWidget {
   const _NavItem({
     required this.icon,
     required this.active,
@@ -66,30 +72,22 @@ class _NavItem extends StatefulWidget {
   final VoidCallback onTap;
 
   @override
-  State<_NavItem> createState() => _NavItemState();
-}
-
-class _NavItemState extends State<_NavItem>
-    with SingleTickerProviderStateMixin {
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOutCubic,
         width: 65,
         height: 38,
         decoration: BoxDecoration(
-          color: widget.active ? Colors.white : Colors.transparent,
+          color: active ? Colors.white : Colors.transparent,
           borderRadius: .circular(19),
         ),
         child: Icon(
-          widget.icon,
+          icon,
           size: 18,
-          color: widget.active
-              ? AppColors.navBg
-              : Colors.white.withValues(alpha: 0.65),
+          color: active ? AppColors.navBg : Colors.white.withValues(alpha: 0.65),
         ),
       ),
     );

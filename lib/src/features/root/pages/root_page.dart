@@ -2,8 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/components/theme/app_colors.dart';
-import '../../../core/components/theme/app_spacing.dart';
 import '../../../core/config/app_di.dart';
 import '../../../core/config/app_router.dart';
 import '../../../core/extension/ext_overlays.dart';
@@ -12,13 +10,55 @@ import '../../home/widgets/c_home_tracking_fab.dart';
 import '../widgets/c_pill_nav_bar.dart';
 
 @RoutePage()
-class RootPage extends StatelessWidget {
+class RootPage extends StatefulWidget {
   const RootPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.paddingOf(context).bottom;
+  State<RootPage> createState() => _RootPageState();
+}
 
+class _RootPageState extends State<RootPage> {
+  int _activeIndex = 0;
+  StackRouter? _router;
+
+  static const _routes = [HomeRoute(), HistoryRoute(), SettingsRoute()];
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _router = context.router;
+      _router?.addListener(_onRouteChanged);
+    });
+  }
+
+  @override
+  void dispose() {
+    _router?.removeListener(_onRouteChanged);
+
+    super.dispose();
+  }
+
+  void _onRouteChanged() {
+    final path = _router?.currentPath ?? '';
+    final index = path.contains('history')
+        ? 1
+        : path.contains('settings')
+        ? 2
+        : 0;
+
+    if (_activeIndex != index) setState(() => _activeIndex = index);
+  }
+
+  void _onTabTap(int index) {
+    setState(() => _activeIndex = index);
+
+    context.replaceRoute(_routes[index]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => locator<TrackerBloc>()..add(const TrackerEvent.init()),
       child: BlocListener<TrackerBloc, TrackerState>(
@@ -29,38 +69,26 @@ class RootPage extends StatelessWidget {
         },
         listener: (context, _) =>
             context.showToast('Tracking completed', type: .success),
-        child: Stack(
-          children: [
-            AutoTabsScaffold(
-              routes: const [HomeRoute(), HistoryRoute(), SettingsRoute()],
-              extendBody: true,
-              backgroundColor: AppColors.surfaceWhite,
-              transitionBuilder: (context, child, animation) =>
-                  FadeTransition(opacity: animation, child: child),
-              bottomNavigationBuilder: (_, tabsRouter) =>
-                  CPillNavBar(tabsRouter: tabsRouter),
-              resizeToAvoidBottomInset: true,
-            ),
-            Positioned(
-              bottom: bottomInset + 76,
-              right: context.m,
-              child: Center(
-                child: BlocBuilder<TrackerBloc, TrackerState>(
-                  builder: (context, state) {
-                    final isTracking =
-                        state.mapOrNull(active: (s) => s)?.isTracking ?? false;
+        child: Scaffold(
+          extendBody: true,
+          floatingActionButton: BlocBuilder<TrackerBloc, TrackerState>(
+            builder: (context, state) {
+              final isTracking =
+                  state.mapOrNull(active: (s) => s)?.isTracking ?? false;
 
-                    return HomeTrackingFab(
-                      isTracking: isTracking,
-                      onTap: () => context.read<TrackerBloc>().add(
-                        const TrackerEvent.toggleTracking(),
-                      ),
-                    );
-                  },
+              return HomeTrackingFab(
+                isTracking: isTracking,
+                onTap: () => context.read<TrackerBloc>().add(
+                  const TrackerEvent.toggleTracking(),
                 ),
-              ),
-            ),
-          ],
+              );
+            },
+          ),
+          bottomNavigationBar: CPillNavBar(
+            activeIndex: _activeIndex,
+            onTabTap: _onTabTap,
+          ),
+          body: const AutoRouter(),
         ),
       ),
     );
