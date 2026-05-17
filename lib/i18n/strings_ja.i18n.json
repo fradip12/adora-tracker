@@ -54,6 +54,22 @@
     "languageDesc": "表示言語を変更",
     "languageSelectTitle": "言語を選択"
   },
+  "history": {
+    "title": "履歴",
+    "filterToday": "今日",
+    "filterYesterday": "昨日",
+    "filterThisWeek": "今週",
+    "filterAll": "すべて",
+    "statPoints": "ポイント",
+    "statDistance": "km走行",
+    "statAccuracy": "平均精度",
+    "accuracyValue": "±${meters}m",
+    "empty": "この期間の位置データはありません",
+    "justNow": "たった今",
+    "minutesAgo": "${n}分前",
+    "hoursAgo": "${n}時間前",
+    "daysAgo": "${n}日前"
+  },
   "home": {
     "tracker": "トラッカー",
     "trackingActive": "バックグラウンドで追跡中",

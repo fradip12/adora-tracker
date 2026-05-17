@@ -54,6 +54,22 @@
     "languageDesc": "Change display language",
     "languageSelectTitle": "Select Language"
   },
+  "history": {
+    "title": "History",
+    "filterToday": "Today",
+    "filterYesterday": "Yesterday",
+    "filterThisWeek": "This Week",
+    "filterAll": "All",
+    "statPoints": "Points",
+    "statDistance": "km covered",
+    "statAccuracy": "Avg accuracy",
+    "accuracyValue": "±${meters}m",
+    "empty": "No location data for this period",
+    "justNow": "Just now",
+    "minutesAgo": "${n}m ago",
+    "hoursAgo": "${n}h ago",
+    "daysAgo": "${n}d ago"
+  },
   "home": {
     "tracker": "Tracker",
     "trackingActive": "Background tracking active",

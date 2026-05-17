@@ -6,6 +6,7 @@ import '../../../../i18n/strings.g.dart';
 import '../../../core/components/theme/app_colors.dart';
 import '../../../core/components/theme/app_spacing.dart';
 import '../../../core/config/app_di.dart';
+import '../../root/widgets/c_pill_nav_bar.dart';
 import '../managers/settings_bloc.dart';
 import '../widgets/c_battery_warning_box.dart';
 import '../widgets/c_danger_button.dart';
@@ -13,7 +14,6 @@ import '../widgets/c_settings_section_label.dart';
 import '../widgets/v_settings_language_section.dart';
 import '../widgets/v_settings_permissions_section.dart';
 import '../widgets/v_settings_tracking_section.dart';
-import '../../root/widgets/c_pill_nav_bar.dart';
 
 @RoutePage()
 class SettingsPage extends StatelessWidget {

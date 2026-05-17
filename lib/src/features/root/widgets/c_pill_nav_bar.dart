@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/components/theme/app_colors.dart';
+import '../../../core/components/theme/app_spacing.dart';
 
 class CPillNavBar extends StatelessWidget {
   const CPillNavBar({
@@ -13,7 +14,7 @@ class CPillNavBar extends StatelessWidget {
   final int activeIndex;
   final ValueChanged<int> onTabTap;
 
-  static const double barHeight = 52.0;
+  static const double barHeight = 52;
 
   static const _icons = [
     LucideIcons.layoutDashboard,
@@ -23,36 +24,41 @@ class CPillNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
+    final safeBottom = MediaQuery.viewPaddingOf(context).bottom;
+
+    return SizedBox(
+      height: barHeight + safeBottom + context.m,
       child: Align(
         alignment: .bottomCenter,
-        child: Container(
-          height: barHeight,
-          padding: const .all(7),
-          decoration: BoxDecoration(
-            color: AppColors.navBg,
-            borderRadius: .circular(26),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: .min,
-            children: [
-              for (int i = 0; i < _icons.length; i++) ...[
-                if (i > 0) const SizedBox(width: 4),
-                _NavItem(
-                  icon: _icons[i],
-                  active: activeIndex == i,
-                  onTap: () => onTabTap(i),
+        child: Padding(
+          padding: .only(bottom: safeBottom + context.s),
+          child: Container(
+            height: barHeight,
+            padding: .all(context.xs),
+            decoration: BoxDecoration(
+              color: AppColors.navBg,
+              borderRadius: .circular(context.xl),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
                 ),
               ],
-            ],
+            ),
+            child: Row(
+              mainAxisSize: .min,
+              children: [
+                for (int i = 0; i < _icons.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 4),
+                  _NavItem(
+                    icon: _icons[i],
+                    active: activeIndex == i,
+                    onTap: () => onTabTap(i),
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
       ),
@@ -87,7 +93,9 @@ class _NavItem extends StatelessWidget {
         child: Icon(
           icon,
           size: 18,
-          color: active ? AppColors.navBg : Colors.white.withValues(alpha: 0.65),
+          color: active
+              ? AppColors.navBg
+              : Colors.white.withValues(alpha: 0.65),
         ),
       ),
     );

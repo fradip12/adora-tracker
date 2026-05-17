@@ -1,6 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
+import '../../core/data/models/coordinate_record.dart';
+import '../../features/history/pages/history_detail_page.dart';
 import '../../features/history/pages/history_page.dart';
 import '../../features/home/pages/home_page.dart';
 import '../../features/onboarding/pages/intro_page.dart';
@@ -28,6 +32,7 @@ class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
     AutoRoute(page: SplashRoute.page, initial: true),
+    AutoRoute(page: HistoryDetailRoute.page),
     AutoRoute(page: IntroRoute.page),
     AutoRoute(page: WizardRoute.page),
     AutoRoute(

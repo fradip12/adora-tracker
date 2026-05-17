@@ -30,6 +30,7 @@ environment:
 dependencies:
   animations: ^2.2.0
   auto_route: ^10.2.2
+  collection: ^1.19.1
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
