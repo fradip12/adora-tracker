@@ -60,6 +60,8 @@ extension TrackingSessionsDao on AppDatabase {
       (select(trackingSessions)
             ..orderBy([(t) => .desc(t.id)]))
           .get();
+
+  Future<void> deleteAll() => delete(trackingSessions).go();
 }
 
 // — Coordinate DAO —

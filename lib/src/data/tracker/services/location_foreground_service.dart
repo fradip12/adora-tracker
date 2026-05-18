@@ -9,14 +9,11 @@ class LocationForegroundService {
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'adaro_tracking',
         channelName: 'Adaro Tracking',
-        channelImportance: NotificationChannelImportance.LOW,
-        priority: NotificationPriority.LOW,
       ),
       iosNotificationOptions: const IOSNotificationOptions(),
       foregroundTaskOptions: ForegroundTaskOptions(
         eventAction:
             ForegroundTaskEventAction.repeat(interval.duration.inMilliseconds),
-        autoRunOnBoot: false,
       ),
     );
   }

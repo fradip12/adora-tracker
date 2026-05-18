@@ -6,6 +6,8 @@ import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../i18n/strings.g.dart';
+import '../../../core/config/app_di.dart';
+import '../../../core/data/database/app_database.dart';
 import '../../../data/settings/enums/app_locale_option.dart';
 import '../../../data/settings/enums/tracking_interval.dart';
 import '../../../data/settings/services/settings_service.dart';
@@ -123,6 +125,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     _ClearData event,
     Emitter<SettingsState> emit,
   ) async {
-    // Data clearing is handled by the database layer directly
+    await locator<AppDatabase>().deleteAll();
   }
 }
