@@ -4,7 +4,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../i18n/strings.g.dart';
 import '../../../core/components/theme/app_colors.dart';
-import '../../../core/data/models/coordinate_record.dart';
+import '../../../core/data/database/app_database.dart';
+import '../../../data/tracker/enums/gps_accuracy.dart';
 import 'c_accuracy_badge.dart';
 
 class CoordinateListItem extends StatelessWidget {
@@ -15,14 +16,14 @@ class CoordinateListItem extends StatelessWidget {
     super.key,
   });
 
-  final CoordinateRecord record;
+  final TrackingCoordinate record;
   final bool isLatest;
   final VoidCallback? onTap;
 
   static final _timeFormat = DateFormat('h:mm a');
 
   String _relativeTime(BuildContext context) {
-    final diff = DateTime.now().difference(record.timestamp);
+    final diff = DateTime.now().difference(DateTime.parse(record.timestamp));
     if (diff.inSeconds < 60) return context.t.history.justNow;
     if (diff.inMinutes < 60) {
       return context.t.history.minutesAgo(n: diff.inMinutes);
@@ -41,7 +42,7 @@ class CoordinateListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = _timeFormat.format(record.timestamp);
+    final timeStr = _timeFormat.format(DateTime.parse(record.timestamp));
     final relStr = _relativeTime(context);
 
     return GestureDetector(
@@ -82,7 +83,11 @@ class CoordinateListItem extends StatelessWidget {
                         color: AppColors.textTertiary,
                       ),
                     ),
-                    AccuracyBadge(accuracy: record.accuracy),
+                    AccuracyBadge(
+                      accuracy: GpsAccuracy.values
+                          .byName(record.accuracy)
+                          .toMeters,
+                    ),
                   ],
                 ),
               ],

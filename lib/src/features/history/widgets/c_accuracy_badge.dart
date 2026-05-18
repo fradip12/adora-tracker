@@ -26,7 +26,7 @@ class AccuracyBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final level = AccuracyLevel.fromMeters(accuracy);
     return Container(
-      padding: .symmetric(horizontal: 7, vertical: 2),
+      padding: const .symmetric(horizontal: 7, vertical: 2),
       decoration: BoxDecoration(
         color: level.bgColor,
         borderRadius: .circular(6),

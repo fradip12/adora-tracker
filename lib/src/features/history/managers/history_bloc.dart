@@ -3,9 +3,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/data/database/coordinate_dao.dart';
-import '../../../core/data/models/coordinate_record.dart';
+import '../../../core/data/database/app_database.dart';
 import '../../../data/history/enums/history_filter.dart';
+import '../../../data/tracker/enums/gps_accuracy.dart';
 
 part 'history_state.dart';
 part 'history_event.dart';
@@ -13,9 +13,9 @@ part 'history_bloc.freezed.dart';
 
 @injectable
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
-  final CoordinateDao _dao;
+  final AppDatabase _db;
 
-  HistoryBloc(this._dao) : super(const HistoryState.initial()) {
+  HistoryBloc(this._db) : super(const HistoryState.initial()) {
     on<_Load>(_onLoad);
     on<_FilterChanged>(_onFilterChanged);
     on<_Refresh>(_onRefresh);
@@ -33,8 +33,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   }
 
   Future<void> _onRefresh(_Refresh event, Emitter<HistoryState> emit) async {
-    final currentFilter =
-        state.mapOrNull(active: (s) => s.filter) ?? .today;
+    final currentFilter = state.mapOrNull(active: (s) => s.filter) ?? .today;
     await _loadWithFilter(currentFilter, emit);
   }
 
@@ -51,8 +50,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     final distanceKm = _totalDistanceKm(ascending);
     final avgAccuracy = records.isEmpty
         ? 0.0
-        : records.map((r) => r.accuracy).reduce((a, b) => a + b) /
-              records.length;
+        : records
+                .map((r) => GpsAccuracy.values.byName(r.accuracy).toMeters)
+                .reduce((a, b) => a + b) /
+            records.length;
 
     emit(
       HistoryState.active(
@@ -65,34 +66,34 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     );
   }
 
-  Future<List<CoordinateRecord>> _fetchRecords(HistoryFilter filter) async {
+  Future<List<TrackingCoordinate>> _fetchRecords(HistoryFilter filter) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
     return switch (filter) {
       HistoryFilter.today =>
-        _dao.queryByDateRange(today, today.add(const Duration(days: 1))),
-      HistoryFilter.yesterday => _dao.queryByDateRange(
+        _db.coordsByDateRange(today, today.add(const Duration(days: 1))),
+      HistoryFilter.yesterday => _db.coordsByDateRange(
           today.subtract(const Duration(days: 1)),
           today,
         ),
-      HistoryFilter.thisWeek => _dao.queryByDateRange(
+      HistoryFilter.thisWeek => _db.coordsByDateRange(
           today.subtract(Duration(days: today.weekday - 1)),
           today.add(const Duration(days: 1)),
         ),
-      HistoryFilter.all => _dao.queryAll(),
+      HistoryFilter.all => _db.allCoords(),
     };
   }
 
-  double _totalDistanceKm(List<CoordinateRecord> records) {
-    if (records.length < 2) return 0;
+  double _totalDistanceKm(List<TrackingCoordinate> coords) {
+    if (coords.length < 2) return 0;
     var total = 0.0;
-    for (var i = 1; i < records.length; i++) {
+    for (var i = 1; i < coords.length; i++) {
       total += Geolocator.distanceBetween(
-        records[i - 1].latitude,
-        records[i - 1].longitude,
-        records[i].latitude,
-        records[i].longitude,
+        coords[i - 1].latitude,
+        coords[i - 1].longitude,
+        coords[i].latitude,
+        coords[i].longitude,
       );
     }
     return total / 1000;

@@ -6,13 +6,13 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../i18n/strings.g.dart';
 import '../../../core/components/theme/app_colors.dart';
-import '../../../core/data/models/coordinate_record.dart';
+import '../../../core/data/database/app_database.dart';
 
 @RoutePage()
 class HistoryDetailPage extends StatelessWidget {
   const HistoryDetailPage({required this.records, super.key});
 
-  final List<CoordinateRecord> records;
+  final List<TrackingCoordinate> records;
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +34,17 @@ class HistoryDetailPage extends StatelessWidget {
     if (points.length == 1) {
       mapOptions = MapOptions(initialCenter: points.first, initialZoom: 16);
     } else {
-      mapOptions = MapOptions(
-        initialCameraFit: CameraFit.bounds(
-          bounds: LatLngBounds.fromPoints(points),
-          padding: const EdgeInsets.all(64),
-        ),
-      );
+      final bounds = LatLngBounds.fromPoints(points);
+      final hasArea =
+          bounds.north != bounds.south || bounds.east != bounds.west;
+      mapOptions = hasArea
+          ? MapOptions(
+              initialCameraFit: CameraFit.bounds(
+                bounds: bounds,
+                padding: const EdgeInsets.all(64),
+              ),
+            )
+          : MapOptions(initialCenter: points.first, initialZoom: 16);
     }
 
     return Scaffold(

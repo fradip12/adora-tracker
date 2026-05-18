@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import '../../../../i18n/strings.g.dart';
 import '../../../core/components/theme/app_colors.dart';
 import '../../../core/components/theme/app_spacing.dart';
-import '../../../core/data/models/coordinate_record.dart';
+import '../../../core/data/database/app_database.dart';
 import 'c_coordinate_list_item.dart';
 
 class HistoryListSection extends StatelessWidget {
   const HistoryListSection({required this.records, this.onItemTap, super.key});
 
-  final List<CoordinateRecord> records;
+  final List<TrackingCoordinate> records;
   final VoidCallback? onItemTap;
 
   @override

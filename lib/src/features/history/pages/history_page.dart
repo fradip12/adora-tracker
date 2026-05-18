@@ -76,9 +76,11 @@ class _HistoryView extends StatelessWidget {
                       padding: .symmetric(horizontal: context.l),
                       child: HistoryListSection(
                         records: active.records,
-                        onItemTap: () => context.router.root.push(
-                          HistoryDetailRoute(records: active.records),
-                        ),
+                        onItemTap: () {
+                          context.router.root.push(
+                            HistoryDetailRoute(records: active.records),
+                          );
+                        },
                       ),
                     ),
                   ),
