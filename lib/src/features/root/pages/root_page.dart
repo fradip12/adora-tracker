@@ -17,7 +17,7 @@ class RootPage extends StatefulWidget {
   State<RootPage> createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends State<RootPage> with WidgetsBindingObserver {
   int _activeIndex = 0;
   StackRouter? _router;
 
@@ -26,18 +26,26 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _router = context.router;
       _router?.addListener(_onRouteChanged);
     });
+
+    context.read<TrackerBloc>().add(const .init());
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _router?.removeListener(_onRouteChanged);
-
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    context.read<TrackerBloc>().add(.appLifecycleChanged(state));
   }
 
   void _onRouteChanged() {
@@ -59,37 +67,32 @@ class _RootPageState extends State<RootPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => locator<TrackerBloc>()..add(const TrackerEvent.init()),
-      child: BlocListener<TrackerBloc, TrackerState>(
-        listenWhen: (prev, curr) {
-          final was = prev.mapOrNull(active: (s) => s)?.isTracking ?? false;
-          final now = curr.mapOrNull(active: (s) => s)?.isTracking ?? false;
-          return was && !now;
-        },
-        listener: (context, _) =>
-            context.showToast('Tracking completed', type: .success),
-        child: Scaffold(
-          extendBody: true,
-          floatingActionButton: BlocBuilder<TrackerBloc, TrackerState>(
-            builder: (context, state) {
-              final isTracking =
-                  state.mapOrNull(active: (s) => s)?.isTracking ?? false;
+    return BlocListener<TrackerBloc, TrackerState>(
+      listenWhen: (prev, curr) {
+        final was = prev.mapOrNull(active: (s) => s)?.isTracking ?? false;
+        final now = curr.mapOrNull(active: (s) => s)?.isTracking ?? false;
+        return was && !now;
+      },
+      listener: (context, _) =>
+          context.showToast('Tracking completed', type: .success),
+      child: Scaffold(
+        extendBody: true,
+        floatingActionButton: BlocBuilder<TrackerBloc, TrackerState>(
+          builder: (context, state) {
+            final isTracking =
+                state.mapOrNull(active: (s) => s)?.isTracking ?? false;
 
-              return HomeTrackingFab(
-                isTracking: isTracking,
-                onTap: () => context.read<TrackerBloc>().add(
-                  const TrackerEvent.toggleTracking(),
-                ),
-              );
-            },
-          ),
-          bottomNavigationBar: CPillNavBar(
-            activeIndex: _activeIndex,
-            onTabTap: _onTabTap,
-          ),
-          body: const AutoRouter(),
+            return HomeTrackingFab(
+              isTracking: isTracking,
+              onTap: () => locator<TrackerBloc>().add(const .toggleTracking()),
+            );
+          },
         ),
+        bottomNavigationBar: CPillNavBar(
+          activeIndex: _activeIndex,
+          onTabTap: _onTabTap,
+        ),
+        body: const AutoRouter(),
       ),
     );
   }

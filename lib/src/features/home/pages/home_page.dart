@@ -6,7 +6,6 @@ import '../../../core/components/theme/app_spacing.dart';
 import '../managers/tracker_bloc.dart';
 import '../widgets/c_home_coord_card.dart';
 import '../widgets/c_home_map_section.dart';
-import '../widgets/c_home_stats_mini.dart';
 import '../widgets/c_home_tracking_chip.dart';
 
 @RoutePage()
@@ -33,7 +32,8 @@ class HomePage extends StatelessWidget {
               spacing: context.s,
               children: [
                 Flexible(child: HomeTrackingChip(isTracking: isTracking)),
-                Flexible(
+
+                Expanded(
                   flex: 3,
                   child: HomeMapSection(
                     height: mapHeight,
@@ -41,19 +41,8 @@ class HomePage extends StatelessWidget {
                     trackPoints: active?.trackPoints ?? const [],
                   ),
                 ),
-                Flexible(flex: 2, child: HomeCoordCard(position: position)),
-                Flexible(
-                  child: HomeStatsMini(
-                    points: active?.todayPoints ?? 0,
-                    distanceM: active?.todayDistanceM ?? 0,
-                    durationSeconds: active?.todayDurationSeconds ?? 0,
-                  ),
-                ),
-                Flexible(
-                  child: SizedBox(
-                    height: MediaQuery.paddingOf(context).bottom + 88,
-                  ),
-                ),
+
+                Flexible(child: HomeCoordCard(position: position)),
               ],
             ),
           ),

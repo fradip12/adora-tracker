@@ -1,11 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../core/data/database/app_database.dart';
 import '../../../data/history/enums/history_filter.dart';
-import '../../../data/tracker/enums/gps_accuracy.dart';
+import '../../../data/history/models/session_summary.dart';
 
 part 'history_state.dart';
 part 'history_event.dart';
@@ -43,59 +42,58 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     emit(.loading(filter: filter));
 
-    final ascending = await _fetchRecords(filter);
-    final records = ascending.reversed.toList();
+    final rawSessions = await _fetchSessions(filter);
+    final sessions = await Future.wait(
+      rawSessions.map((s) async {
+        final coords = await _db.coordsForSession(s.id);
+        return SessionSummary(
+          session: s,
+          coordinates: coords,
+          distanceKm: SessionSummary.computeDistanceKm(coords),
+        );
+      }),
+    );
 
-    final pointCount = records.length;
-    final distanceKm = _totalDistanceKm(ascending);
-    final avgAccuracy = records.isEmpty
+    final totalPoints = sessions.fold(0, (sum, s) => sum + s.pointCount);
+    final totalDistanceKm = sessions.fold<double>(
+      0,
+      (sum, s) => sum + s.distanceKm,
+    );
+    final allCoords = sessions.expand((s) => s.coordinates).toList();
+    final avgAccuracy = allCoords.isEmpty
         ? 0.0
-        : records
-                .map((r) => GpsAccuracy.values.byName(r.accuracy).toMeters)
-                .reduce((a, b) => a + b) /
-            records.length;
+        : sessions.fold<double>(0, (sum, s) => sum + s.avgAccuracyMeters) /
+              sessions.length;
 
     emit(
       .active(
         filter: filter,
-        records: records,
-        pointCount: pointCount,
-        distanceKm: distanceKm,
+        sessions: sessions,
+        totalPoints: totalPoints,
+        totalDistanceKm: totalDistanceKm,
         avgAccuracy: avgAccuracy,
       ),
     );
   }
 
-  Future<List<TrackingCoordinate>> _fetchRecords(HistoryFilter filter) {
+  Future<List<TrackingSession>> _fetchSessions(HistoryFilter filter) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
 
     return switch (filter) {
-      HistoryFilter.today =>
-        _db.coordsByDateRange(today, today.add(const Duration(days: 1))),
-      HistoryFilter.yesterday => _db.coordsByDateRange(
-          today.subtract(const Duration(days: 1)),
-          today,
-        ),
-      HistoryFilter.thisWeek => _db.coordsByDateRange(
-          today.subtract(Duration(days: today.weekday - 1)),
-          today.add(const Duration(days: 1)),
-        ),
-      HistoryFilter.all => _db.allCoords(),
+      HistoryFilter.today => _db.sessionsByDateRange(
+        today,
+        today.add(const Duration(days: 1)),
+      ),
+      HistoryFilter.yesterday => _db.sessionsByDateRange(
+        today.subtract(const Duration(days: 1)),
+        today,
+      ),
+      HistoryFilter.thisWeek => _db.sessionsByDateRange(
+        today.subtract(Duration(days: today.weekday - 1)),
+        today.add(const Duration(days: 1)),
+      ),
+      HistoryFilter.all => _db.allSessions(),
     };
-  }
-
-  double _totalDistanceKm(List<TrackingCoordinate> coords) {
-    if (coords.length < 2) return 0;
-    var total = 0.0;
-    for (var i = 1; i < coords.length; i++) {
-      total += Geolocator.distanceBetween(
-        coords[i - 1].latitude,
-        coords[i - 1].longitude,
-        coords[i].latitude,
-        coords[i].longitude,
-      );
-    }
-    return total / 1000;
   }
 }

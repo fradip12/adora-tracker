@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -21,14 +19,12 @@ class WizardPermissionBloc
 
   WizardPermissionBloc(this._prefs) : super(const WizardPermissionState()) {
     on<_Init>((event, emit) async {
-      final loc = await Permission.locationWhenInUse.status;
-      final notif = Platform.isIOS
-          ? await Permission.notification.status
-          : PermissionStatus.granted;
+      final loc = await Permission.locationAlways.status;
+      final notif = await Permission.notification.status;
       emit(
         WizardPermissionState(
           active: true,
-          locationGranted: loc.isGranted || loc.isLimited,
+          locationGranted: loc.isGranted,
           notificationGranted: notif.isGranted,
         ),
       );
@@ -41,7 +37,7 @@ class WizardPermissionBloc
 
       if (event.slideIndex == 0) {
         await _requestLocation(emit);
-      } else if (event.slideIndex == 1 && Platform.isIOS) {
+      } else if (event.slideIndex == 1) {
         await _requestNotification(emit);
       }
 
@@ -51,13 +47,11 @@ class WizardPermissionBloc
     on<_RefreshStatuses>((event, emit) async {
       if (!state.active) return;
 
-      final loc = await Permission.locationWhenInUse.status;
-      final notif = Platform.isIOS
-          ? await Permission.notification.status
-          : PermissionStatus.granted;
+      final loc = await Permission.locationAlways.status;
+      final notif = await Permission.notification.status;
       emit(
         state.copyWith(
-          locationGranted: loc.isGranted || loc.isLimited,
+          locationGranted: loc.isGranted,
           notificationGranted: notif.isGranted,
         ),
       );
@@ -81,16 +75,28 @@ class WizardPermissionBloc
   }
 
   Future<void> _requestLocation(Emitter<WizardPermissionState> emit) async {
-    final current = await Permission.locationWhenInUse.status;
-    if (current.isPermanentlyDenied) {
+    // Android requires locationWhenInUse before locationAlways can be granted.
+    // On Android 11+, locationAlways.request() opens app settings for "Allow all the time".
+    final alwaysStatus = await Permission.locationAlways.status;
+    if (alwaysStatus.isGranted) {
+      if (state.active) emit(state.copyWith(locationGranted: true));
+      return;
+    }
+
+    if (alwaysStatus.isPermanentlyDenied) {
       await openAppSettings();
       return;
     }
-    final status = await Permission.locationWhenInUse.request();
+
+    final whenInUse = await Permission.locationWhenInUse.status;
+    if (!whenInUse.isGranted && !whenInUse.isLimited) {
+      final whenInUseResult = await Permission.locationWhenInUse.request();
+      if (!whenInUseResult.isGranted && !whenInUseResult.isLimited) return;
+    }
+
+    final result = await Permission.locationAlways.request();
     if (state.active) {
-      emit(
-        state.copyWith(locationGranted: status.isGranted || status.isLimited),
-      );
+      emit(state.copyWith(locationGranted: result.isGranted));
     }
   }
 

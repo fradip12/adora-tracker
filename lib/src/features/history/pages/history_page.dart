@@ -49,6 +49,7 @@ class _HistoryView extends StatelessWidget {
                   onRefresh: () =>
                       context.read<HistoryBloc>().add(const .refresh()),
                 ),
+
                 Padding(
                   padding: .symmetric(horizontal: context.l),
                   child: FilterChipBar(
@@ -57,6 +58,7 @@ class _HistoryView extends StatelessWidget {
                         context.read<HistoryBloc>().add(.filterChanged(f)),
                   ),
                 ),
+
                 if (active != null) ...[
                   Padding(
                     padding: .fromLTRB(
@@ -66,8 +68,8 @@ class _HistoryView extends StatelessWidget {
                       context.m,
                     ),
                     child: HistoryStatsSection(
-                      pointCount: active.pointCount,
-                      distanceKm: active.distanceKm,
+                      pointCount: active.totalPoints,
+                      distanceKm: active.totalDistanceKm,
                       avgAccuracy: active.avgAccuracy,
                     ),
                   ),
@@ -75,10 +77,10 @@ class _HistoryView extends StatelessWidget {
                     child: Padding(
                       padding: .symmetric(horizontal: context.l),
                       child: HistoryListSection(
-                        records: active.records,
-                        onItemTap: () {
+                        sessions: active.sessions,
+                        onItemTap: (summary) {
                           context.router.root.push(
-                            HistoryDetailRoute(records: active.records),
+                            HistoryDetailRoute(records: summary.coordinates),
                           );
                         },
                       ),
@@ -93,6 +95,7 @@ class _HistoryView extends StatelessWidget {
                       ),
                     ),
                   ),
+
                 SizedBox(
                   height:
                       MediaQuery.viewPaddingOf(context).bottom +
@@ -117,6 +120,7 @@ class _HistoryHeader extends StatelessWidget {
     return Padding(
       padding: .fromLTRB(context.l, context.xs, context.l, context.m),
       child: Row(
+        spacing: context.xxs,
         children: [
           Expanded(
             child: Text(
@@ -130,7 +134,6 @@ class _HistoryHeader extends StatelessWidget {
             ),
           ),
           _IconButton(icon: LucideIcons.refreshCw, onTap: onRefresh),
-          SizedBox(width: context.xs),
           const _IconButton(icon: LucideIcons.arrowDownUp),
         ],
       ),

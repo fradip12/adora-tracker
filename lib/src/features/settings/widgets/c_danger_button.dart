@@ -19,11 +19,11 @@ class DangerButton extends StatelessWidget {
         content: Text(context.t.settings.clearDataConfirmMessage),
         actions: [
           TextButton(
-            onPressed: () => context.pop(false),
+            onPressed: () => context.maybePop(false),
             child: Text(context.t.settings.clearDataConfirmCancel),
           ),
           TextButton(
-            onPressed: () => context.pop(true),
+            onPressed: () => context.maybePop(true),
             style: TextButton.styleFrom(foregroundColor: AppColors.danger),
             child: Text(context.t.settings.clearDataConfirmDelete),
           ),
@@ -44,7 +44,7 @@ class DangerButton extends StatelessWidget {
           border: .all(color: AppColors.danger),
           borderRadius: .circular(context.m),
         ),
-        alignment: Alignment.center,
+        alignment: .center,
         child: Text(
           context.t.settings.clearData,
           style: const TextStyle(

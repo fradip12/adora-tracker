@@ -82,8 +82,11 @@ class _HomeTrackingChipState extends State<HomeTrackingChip>
               ],
             ),
           ),
+
           Text(
-            isTracking ? context.t.home.trackingActive : context.t.home.trackingPaused,
+            isTracking
+                ? context.t.home.trackingActive
+                : context.t.home.trackingPaused,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -92,6 +95,7 @@ class _HomeTrackingChipState extends State<HomeTrackingChip>
                   : AppColors.textSecondary,
             ),
           ),
+
           const Spacer(),
           if (isTracking)
             Container(

@@ -41,7 +41,7 @@ class SettingsPermissionsSection extends StatelessWidget {
           description: context.t.settings.permLocationDesc,
           onTap: openAppSettings,
           trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             spacing: 8,
             children: [
               PermBadge(status: locationGranted ? .allowed : .denied),
@@ -49,6 +49,7 @@ class SettingsPermissionsSection extends StatelessWidget {
             ],
           ),
         ),
+
         SettingsRow(
           icon: LucideIcons.bell,
           iconBgColor: AppColors.primaryLight,
@@ -57,7 +58,7 @@ class SettingsPermissionsSection extends StatelessWidget {
           description: context.t.settings.permNotificationDesc,
           onTap: openAppSettings,
           trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             spacing: 8,
             children: [
               PermBadge(status: notificationGranted ? .allowed : .denied),
@@ -65,6 +66,7 @@ class SettingsPermissionsSection extends StatelessWidget {
             ],
           ),
         ),
+
         if (Platform.isAndroid)
           SettingsRow(
             icon: LucideIcons.batteryCharging,
@@ -74,7 +76,7 @@ class SettingsPermissionsSection extends StatelessWidget {
             description: context.t.settings.permBatteryDesc,
             onTap: openAppSettings,
             trailing: Row(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               spacing: 8,
               children: [
                 PermBadge(

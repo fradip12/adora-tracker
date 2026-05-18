@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../../../core/components/theme/app_colors.dart';
@@ -41,6 +39,6 @@ const _readySlide = SlideData(
 
 List<SlideData> get wizardSlides => [
   _locationSlide,
-  if (Platform.isIOS) _notificationSlide,
+  _notificationSlide,
   _readySlide,
 ];

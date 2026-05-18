@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../i18n/strings.g.dart';
 import '../../../core/components/theme/app_colors.dart';
 import '../../../core/components/theme/app_spacing.dart';
 import 'c_home_coord_item.dart';
-import 'c_home_meta_chip.dart';
 
 class HomeCoordCard extends StatelessWidget {
   const HomeCoordCard({this.position, super.key});
 
-  final Position? position;
+  final ({double lat, double lng, double accuracy})? position;
 
   @override
   Widget build(BuildContext context) {
-    final lat = position?.latitude;
-    final lon = position?.longitude;
-    final accuracy = position?.accuracy;
+    final lat = position?.lat;
+    final lon = position?.lng;
 
     return Container(
       padding: .all(context.m),
@@ -40,6 +36,7 @@ class HomeCoordCard extends StatelessWidget {
               color: AppColors.textTertiary,
             ),
           ),
+
           IntrinsicHeight(
             child: Row(
               spacing: context.s,
@@ -65,30 +62,6 @@ class HomeCoordCard extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          const Divider(thickness: 1, color: AppColors.borderLight),
-          Row(
-            spacing: context.s,
-            mainAxisAlignment: .spaceBetween,
-            children: [
-              HomeMetaChip(
-                icon: LucideIcons.crosshair,
-                label: accuracy != null
-                    ? context.t.home.accuracyMeters(meters: accuracy.round())
-                    : context.t.home.accuracyUnknown,
-                iconColor: AppColors.primary,
-              ),
-              HomeMetaChip(
-                icon: LucideIcons.clock,
-                label: position != null ? context.t.home.justNow : context.t.home.noSignal,
-                iconColor: AppColors.textTertiary,
-              ),
-              HomeMetaChip(
-                icon: LucideIcons.navigation,
-                label: context.t.home.gps,
-                iconColor: AppColors.primary,
-              ),
-            ],
           ),
         ],
       ),

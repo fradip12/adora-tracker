@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../core/components/theme/app_colors.dart';
+import '../managers/tracker_bloc.dart';
 
 class HomeMapSection extends StatefulWidget {
   const HomeMapSection({
@@ -14,7 +15,7 @@ class HomeMapSection extends StatefulWidget {
   });
 
   final double height;
-  final Position? position;
+  final ({double lat, double lng, double accuracy})? position;
   final List<LatLng> trackPoints;
 
   @override
@@ -37,17 +38,14 @@ class _HomeMapSectionState extends State<HomeMapSection> {
     super.didUpdateWidget(oldWidget);
     final pos = widget.position;
     if (pos != null && pos != oldWidget.position) {
-      _mapController.move(
-        LatLng(pos.latitude, pos.longitude),
-        _mapController.camera.zoom,
-      );
+      _mapController.move(LatLng(pos.lat, pos.lng), _mapController.camera.zoom);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final center = widget.position != null
-        ? LatLng(widget.position!.latitude, widget.position!.longitude)
+        ? LatLng(widget.position!.lat, widget.position!.lng)
         : _defaultCenter;
 
     return ClipRRect(
@@ -66,7 +64,7 @@ class _HomeMapSectionState extends State<HomeMapSection> {
           children: [
             TileLayer(
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'com.adoratech.adaro',
+              userAgentPackageName: 'com.adoratech.adora',
             ),
             if (widget.trackPoints.length >= 2)
               PolylineLayer(
@@ -117,13 +115,15 @@ class _PulsingMarkerState extends State<_PulsingMarker>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1600),
-    )..repeat();
-    _scale = Tween<double>(begin: 0.4, end: 1.8).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
-    _opacity = Tween<double>(begin: 0.65, end: 0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scale = Tween<double>(
+      begin: 0.4,
+      end: 1.8,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _opacity = Tween<double>(
+      begin: 0.65,
+      end: 0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -140,24 +140,45 @@ class _PulsingMarkerState extends State<_PulsingMarker>
         return Stack(
           alignment: .center,
           children: [
-            Transform.scale(
-              scale: _scale.value,
-              child: Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  shape: .circle,
-                  color: AppColors.primaryDark.withValues(alpha: _opacity.value),
-                ),
-              ),
+            BlocBuilder<TrackerBloc, TrackerState>(
+              buildWhen: (prev, curr) =>
+                  prev.mapOrNull(active: (s) => s)?.isTracking !=
+                  curr.mapOrNull(active: (s) => s)?.isTracking,
+              builder: (context, state) {
+                final isTracking =
+                    state.mapOrNull(active: (s) => s)?.isTracking ?? false;
+
+                if (isTracking) {
+                  if (!_controller.isAnimating) _controller.repeat();
+                } else {
+                  if (_controller.isAnimating) _controller.stop();
+                }
+
+                if (!isTracking) return const SizedBox.shrink();
+
+                return Transform.scale(
+                  scale: _scale.value,
+                  child: Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      shape: .circle,
+                      color: AppColors.primaryDark.withValues(
+                        alpha: _opacity.value,
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
+
             Container(
               width: 14,
               height: 14,
               decoration: BoxDecoration(
                 shape: .circle,
                 color: AppColors.primaryDark,
-                border: Border.all(color: Colors.white, width: 2.5),
+                border: .all(color: Colors.white, width: 2.5),
                 boxShadow: [
                   BoxShadow(
                     color: AppColors.primaryDark.withValues(alpha: 0.5),

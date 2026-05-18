@@ -48,9 +48,9 @@ class CPillNavBar extends StatelessWidget {
             ),
             child: Row(
               mainAxisSize: .min,
+              spacing: context.xxs,
               children: [
                 for (int i = 0; i < _icons.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 4),
                   _NavItem(
                     icon: _icons[i],
                     active: activeIndex == i,

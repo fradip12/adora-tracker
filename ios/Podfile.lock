@@ -1,5 +1,10 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_background_geolocation (5.2.0):
+    - Flutter
+    - TSLocationManager (~> 4.1.0)
+  - flutter_local_notifications (0.0.1):
+    - Flutter
   - geolocator_apple (1.2.0):
     - Flutter
     - FlutterMacOS
@@ -14,18 +19,32 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - TSBackgroundFetch (4.1.1)
+  - TSLocationManager (4.1.7):
+    - TSBackgroundFetch (~> 4.1.0)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_background_geolocation (from `.symlinks/plugins/flutter_background_geolocation/ios`)
+  - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/darwin`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
 
+SPEC REPOS:
+  trunk:
+    - TSBackgroundFetch
+    - TSLocationManager
+
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_background_geolocation:
+    :path: ".symlinks/plugins/flutter_background_geolocation/ios"
+  flutter_local_notifications:
+    :path: ".symlinks/plugins/flutter_local_notifications/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/darwin"
   path_provider_foundation:
@@ -39,12 +58,16 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_background_geolocation: 0a34c7da616247491d6db1ee9ff38cac74f0e913
+  flutter_local_notifications: 395056b3175ba4f08480a7c5de30cd36d69827e4
   geolocator_apple: ab36aa0e8b7d7a2d7639b3b4e48308394e8cef5e
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  TSBackgroundFetch: 18918b6449a1e3f01eb0f5b44d6d79ce6160a5a5
+  TSLocationManager: 0c1b8ed109ae05ea4247def2992b3e4e3f49f839
 
-PODFILE CHECKSUM: 25463e37d2f6d82972f7ee32c4eeeb173ed0f7ab
+PODFILE CHECKSUM: 73c10d1885564195c8e95b7ab7bd09e9041bbed3
 
 COCOAPODS: 1.16.2

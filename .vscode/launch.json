@@ -2,13 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "adaro (debug)",
+      "name": "adora (debug)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "debug"
     },
     {
-      "name": "adaro (release)",
+      "name": "adora (release)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../i18n/strings.g.dart';
+import '../../../core/components/interactive/global_text_writer.dart';
 import '../../../core/components/theme/app_colors.dart';
 import '../../../core/components/theme/app_spacing.dart';
 import '../../../core/components/theme/app_typography.dart';
@@ -129,7 +130,7 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
                           textAlign: .center,
                         ),
                       ),
-                      _TypewriterText(
+                      GlobalTypewriterText(
                         key: ValueKey<int>(_index),
                         text: current.description,
                         animation: _typeController,
@@ -139,6 +140,7 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
+
               Align(
                 alignment: .centerRight,
                 child: TextButton(
@@ -176,32 +178,6 @@ class _IntroPageState extends State<IntroPage> with TickerProviderStateMixin {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _TypewriterText extends StatelessWidget {
-  const _TypewriterText({
-    required this.text,
-    required this.animation,
-    required this.style,
-    super.key,
-  });
-
-  final String text;
-  final Animation<double> animation;
-  final TextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    final chars = text.characters.toList();
-    return AnimatedBuilder(
-      animation: animation,
-      builder: (_, _) {
-        final count = (animation.value * chars.length).round();
-        final visible = chars.take(count).join();
-        return Text(visible, style: style, textAlign: .center);
-      },
     );
   }
 }

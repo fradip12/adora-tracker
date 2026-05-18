@@ -15,7 +15,7 @@ class SettingsSectionLabel extends StatelessWidget {
         text.toUpperCase(),
         style: const TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.w600,
+          fontWeight: .w600,
           letterSpacing: 0.08 * 11,
           color: AppColors.textTertiary,
         ),

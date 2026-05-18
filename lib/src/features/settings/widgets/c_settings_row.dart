@@ -38,9 +38,10 @@ class SettingsRow extends StatelessWidget {
               bgColor: iconBgColor,
               iconColor: iconColor,
             ),
+
             Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: .start,
                 spacing: 2,
                 children: [
                   Text(

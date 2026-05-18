@@ -8,9 +8,6 @@ abstract class TrackerState with _$TrackerState {
     @Default(null) int? sessionId,
     @Default(null) ({double lat, double lng, double accuracy})? position,
     @Default(false) bool isTracking,
-    @Default(0) int todayPoints,
-    @Default(0.0) double todayDistanceM,
-    @Default(0) int todayDurationSeconds,
     @Default([]) List<LatLng> trackPoints,
   }) = _Active;
 }

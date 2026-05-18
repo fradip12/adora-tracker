@@ -1,24 +1,24 @@
 {
   "intro": {
-    "slide1Title": "Smart Safety",
-    "slide1Desc": "AI scans your child's device for harmful content — fully on-device, completely private.",
-    "slide2Title": "Always Connected",
-    "slide2Desc": "Real-time location sharing so you always know your child is safe, wherever they are.",
-    "slide3Title": "Complete Peace",
-    "slide3Desc": "One app to protect your child online and in the real world. Simple, powerful, trusted.",
+    "slide1Title": "Precise Tracking",
+    "slide1Desc": "Record GPS routes with pinpoint accuracy. Every waypoint is saved automatically as you move.",
+    "slide2Title": "Session History",
+    "slide2Desc": "Review every journey you've recorded — distance, duration, and accuracy stats all in one place.",
+    "slide3Title": "Always Running",
+    "slide3Desc": "Tracking continues in the background even when the app is closed, so you never miss a step.",
     "getStarted": "Get Started",
     "skip": "Skip"
   },
   "wizard": {
     "readyTitle": "You are ready to go",
-    "readySubtitle": "Adora is all set and watching over your child."
+    "readySubtitle": "Adora is set up and ready to start recording your location."
   },
   "permission": {
-    "locationTitle": "Allow Location access",
-    "locationDescription": "Share your child's location so you always know they're safe and where they need to be.",
+    "locationTitle": "Location Access",
+    "locationDescription": "Adora needs your precise location to record GPS routes and calculate distances during your sessions.",
     "locationButton": "Allow Location",
-    "notificationTitle": "Allow Notifications",
-    "notificationDescription": "Get instant alerts when your child arrives, leaves, or needs your attention.",
+    "notificationTitle": "Stay Notified",
+    "notificationDescription": "A persistent notification keeps tracking visible and prevents the system from interrupting your session.",
     "notificationButton": "Allow Notifications"
   },
   "settings": {
@@ -72,7 +72,7 @@
   },
   "home": {
     "tracker": "Tracker",
-    "trackingActive": "Background tracking active",
+    "trackingActive": "tracking active",
     "trackingPaused": "Tracking paused",
     "backgroundTracking": "Background Tracking",
     "backgroundTrackingDesc": "Continue when app is minimized",

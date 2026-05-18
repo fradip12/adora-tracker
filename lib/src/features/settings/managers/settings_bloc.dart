@@ -20,8 +20,7 @@ part 'settings_bloc.freezed.dart';
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final SettingsService _service;
 
-  SettingsBloc(this._service)
-      : super(const SettingsState.initial()) {
+  SettingsBloc(this._service) : super(const .initial()) {
     on<_Init>(_onInit);
     on<_RefreshPermissions>(_onRefreshPermissions);
     on<_UpdateInterval>(_onUpdateInterval);
@@ -38,7 +37,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     final batteryStatus = await Permission.ignoreBatteryOptimizations.status;
 
     emit(
-      SettingsState.active(
+      .active(
         locationGranted: locationStatus.isGranted,
         notificationGranted: notifStatus.isGranted,
         batteryOptimizationDisabled: batteryStatus.isGranted,

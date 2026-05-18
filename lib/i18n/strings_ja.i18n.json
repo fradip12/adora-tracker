@@ -15,7 +15,7 @@
   },
   "permission": {
     "locationTitle": "位置情報へのアクセス",
-    "locationDescription": "AdaroはGPSルートの記録とセッション中の距離計算のために、正確な位置情報が必要です。",
+    "locationDescription": "AdoraはGPSルートの記録とセッション中の距離計算のために、正確な位置情報が必要です。",
     "locationButton": "位置情報を許可",
     "notificationTitle": "通知を受け取る",
     "notificationDescription": "常時通知によりトラッキングを可視化し、システムによるセッションの中断を防ぎます。",
@@ -72,7 +72,7 @@
   },
   "home": {
     "tracker": "トラッカー",
-    "trackingActive": "バックグラウンドで追跡中",
+    "trackingActive": "追跡中",
     "trackingPaused": "追跡一時停止中",
     "backgroundTracking": "バックグラウンド追跡",
     "backgroundTrackingDesc": "アプリを最小化しても続行します",

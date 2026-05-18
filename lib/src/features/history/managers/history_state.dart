@@ -10,9 +10,9 @@ abstract class HistoryState with _$HistoryState {
 
   const factory HistoryState.active({
     @Default(HistoryFilter.today) HistoryFilter filter,
-    @Default([]) List<TrackingCoordinate> records,
-    @Default(0) int pointCount,
-    @Default(0.0) double distanceKm,
+    @Default([]) List<SessionSummary> sessions,
+    @Default(0) int totalPoints,
+    @Default(0.0) double totalDistanceKm,
     @Default(0.0) double avgAccuracy,
   }) = _Active;
 }

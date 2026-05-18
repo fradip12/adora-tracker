@@ -26,6 +26,7 @@ class BatteryWarningBox extends StatelessWidget {
             size: 18,
             color: Color(0xFFF59E0B),
           ),
+
           Expanded(
             child: RichText(
               text: TextSpan(

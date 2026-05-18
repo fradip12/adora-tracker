@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/components/theme/app_colors.dart';
+import '../../../core/components/theme/app_spacing.dart';
 
 class HomeCoordItem extends StatelessWidget {
   const HomeCoordItem({
@@ -17,18 +18,19 @@ class HomeCoordItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .start,
+      spacing: context.xs,
       children: [
         Text(
           label,
           style: const TextStyle(
             fontSize: 10,
-            fontWeight: FontWeight.w600,
+            fontWeight: .w600,
             letterSpacing: 0.07 * 10,
             color: AppColors.textTertiary,
           ),
         ),
-        const SizedBox(height: 3),
+
         RichText(
           text: TextSpan(
             children: [
@@ -37,7 +39,7 @@ class HomeCoordItem extends StatelessWidget {
                 style: const TextStyle(
                   fontFamily: 'monospace',
                   fontSize: 21,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                   color: AppColors.textPrimary,
                   letterSpacing: -0.2,
                 ),
@@ -46,7 +48,7 @@ class HomeCoordItem extends StatelessWidget {
                 text: suffix,
                 style: const TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                   color: AppColors.primary,
                 ),
               ),

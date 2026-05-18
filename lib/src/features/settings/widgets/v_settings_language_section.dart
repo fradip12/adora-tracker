@@ -40,7 +40,7 @@ class SettingsLanguageSection extends StatelessWidget {
           description: context.t.settings.languageDesc,
           onTap: () => _showLanguagePicker(context),
           trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: .min,
             spacing: 6,
             children: [
               Text(
@@ -51,6 +51,7 @@ class SettingsLanguageSection extends StatelessWidget {
                   color: AppColors.textSecondary,
                 ),
               ),
+
               const Icon(
                 LucideIcons.chevronRight,
                 size: 16,

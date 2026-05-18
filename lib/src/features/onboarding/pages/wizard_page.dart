@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:animations/animations.dart';
@@ -56,7 +55,7 @@ class _WizardViewState extends State<_WizardView>
 
   bool _isStepGranted(WizardPermissionState active, int step) {
     if (step == 0) return active.locationGranted;
-    if (Platform.isIOS && step == 1) return active.notificationGranted;
+    if (step == 1) return active.notificationGranted;
     return true;
   }
 
@@ -80,9 +79,7 @@ class _WizardViewState extends State<_WizardView>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      context.read<WizardPermissionBloc>().add(
-        const WizardPermissionEvent.refreshStatuses(),
-      );
+      context.read<WizardPermissionBloc>().add(const .refreshStatuses());
     }
   }
 
@@ -110,6 +107,7 @@ class _WizardViewState extends State<_WizardView>
       _incomingSlide = _slides[nextIdx];
       _displayPage = nextIdx;
     });
+
     await WidgetsBinding.instance.endOfFrame;
     if (!mounted) return;
 

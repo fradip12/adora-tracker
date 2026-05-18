@@ -55,6 +55,7 @@ class SettingsTrackingSection extends StatelessWidget {
             onChanged: onIntervalChanged,
           ),
         ),
+
         SettingsRow(
           icon: LucideIcons.layoutGrid,
           iconBgColor: AppColors.primaryLight,
@@ -63,6 +64,7 @@ class SettingsTrackingSection extends StatelessWidget {
           description: context.t.settings.backgroundTrackingDesc,
           trailing: _switch(backgroundTracking, onToggleBackgroundTracking),
         ),
+
         SettingsRow(
           icon: LucideIcons.bookmark,
           iconBgColor: AppColors.primaryLight,
@@ -71,6 +73,7 @@ class SettingsTrackingSection extends StatelessWidget {
           description: context.t.settings.terminatedStateDesc,
           trailing: _switch(terminatedState, onToggleTerminatedState),
         ),
+
         SettingsRow(
           icon: LucideIcons.layoutList,
           iconBgColor: AppColors.primaryLight,

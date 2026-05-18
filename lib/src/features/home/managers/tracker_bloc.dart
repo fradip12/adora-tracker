@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,71 +12,71 @@ import '../../../data/settings/services/settings_service.dart';
 import '../../../data/tracker/enums/gps_accuracy.dart';
 import '../../../data/tracker/services/location_foreground_service.dart';
 
-part 'tracker_state.dart';
-part 'tracker_event.dart';
 part 'tracker_bloc.freezed.dart';
+part 'tracker_event.dart';
+part 'tracker_state.dart';
 
 @injectable
 class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   final AppDatabase _db;
   final SettingsService _settings;
 
+  StreamSubscription<List<TrackingCoordinate>>? _statsSub;
   StreamSubscription<List<TrackingCoordinate>>? _coordinateSub;
   StreamSubscription<Position>? _positionSub;
   Timer? _durationTimer;
 
   TrackerBloc(this._db, this._settings) : super(const .initial()) {
-    on<_Init>(_onInit);
-    on<_ToggleTracking>(_onToggleTracking);
-    on<_Tick>(_onTick);
-    on<_CoordinatesUpdated>(_onCoordinatesUpdated);
-    on<_PositionStreamUpdate>(_onPositionStreamUpdate);
-  }
+    on<_Init>((event, emit) async {
+      try {
+        final orphan = await _db.activeSession();
+        if (orphan != null) await _resumeSession(orphan.id, emit);
+      } catch (_) {
+        emit(const .active());
+      }
+    });
 
-  Future<void> _onInit(_Init event, Emitter<TrackerState> emit) async {
-    try {
-      final todayCoords = await _db.coordsToday();
+    on<_ToggleTracking>((event, emit) async {
+      final active = state.mapOrNull(active: (s) => s);
+      if (active == null) return;
+
+      if (active.isTracking) {
+        await _stop(emit);
+      } else {
+        await _start(emit);
+      }
+    });
+
+    on<_CoordinatesUpdated>((event, emit) {
+      final coords = event.coordinates;
+      if (coords.isEmpty) return;
+
+      final last = coords.last;
+      final accuracy = GpsAccuracy.values.byName(last.accuracy);
+
+      final currentState = state.mapOrNull(active: (a) => a);
+      if (currentState != null) {
+        emit(
+          currentState.copyWith(
+            position: (
+              lat: last.latitude,
+              lng: last.longitude,
+              accuracy: accuracy.toMeters,
+            ),
+            trackPoints: coords
+                .map((c) => LatLng(c.latitude, c.longitude))
+                .toList(),
+          ),
+        );
+      }
+    });
+
+    on<_PositionStreamUpdate>((event, emit) {
+      final currentState = state.mapOrNull(active: (a) => a);
+      if (currentState == null) return;
+
       emit(
-        .active(
-          todayPoints: todayCoords.length,
-          todayDistanceM: _totalDistance(todayCoords),
-        ),
-      );
-      final orphan = await _db.activeSession();
-      if (orphan != null) await _resumeSession(orphan.id, emit);
-    } catch (_) {
-      emit(const .active());
-    }
-  }
-
-  Future<void> _onToggleTracking(
-    _ToggleTracking event,
-    Emitter<TrackerState> emit,
-  ) async {
-    final active = state.mapOrNull(active: (s) => s);
-    if (active == null) return;
-    if (active.isTracking) {
-      await _stop(emit);
-    } else {
-      await _start(emit);
-    }
-  }
-
-  void _onTick(_Tick event, Emitter<TrackerState> emit) {
-    final s = state.mapOrNull(active: (a) => a);
-    if (s != null) {
-      emit(s.copyWith(todayDurationSeconds: s.todayDurationSeconds + 1));
-    }
-  }
-
-  void _onPositionStreamUpdate(
-    _PositionStreamUpdate event,
-    Emitter<TrackerState> emit,
-  ) {
-    final s = state.mapOrNull(active: (a) => a);
-    if (s != null) {
-      emit(
-        s.copyWith(
+        currentState.copyWith(
           position: (
             lat: event.lat,
             lng: event.lng,
@@ -83,61 +84,102 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
           ),
         ),
       );
-    }
-  }
 
-  void _onCoordinatesUpdated(
-    _CoordinatesUpdated event,
-    Emitter<TrackerState> emit,
-  ) {
-    final coords = event.coordinates;
-    if (coords.isEmpty) return;
+      if (currentState.isTracking) {
+        final statusText = LocationForegroundService.buildStatusText(
+          backgroundTracking: _settings.backgroundTracking,
+          terminatedState: _settings.terminatedState,
+        );
+        final notifText = _settings.persistentNotification
+            ? '${event.lat.toStringAsFixed(5)}, ${event.lng.toStringAsFixed(5)} ±${GpsAccuracy.fromMeters(event.accuracy).toMeters.toStringAsFixed(0)}m · $statusText'
+            : statusText;
+        LocationForegroundService.updateNotification(notifText);
+      }
+    });
 
-    final last = coords.last;
-    final accuracy = GpsAccuracy.values.byName(last.accuracy);
+    on<_AppLifecycleChanged>((event, emit) async {
+      final currentState = state.mapOrNull(active: (a) => a);
+      if (currentState == null || !currentState.isTracking) return;
 
-    final s = state.mapOrNull(active: (a) => a);
-    if (s != null) {
-      emit(
-        s.copyWith(
-          position: (
-            lat: last.latitude,
-            lng: last.longitude,
-            accuracy: accuracy.toMeters,
-          ),
-          trackPoints: coords
-              .map((c) => LatLng(c.latitude, c.longitude))
-              .toList(),
-          todayPoints: coords.length,
-          todayDistanceM: _totalDistance(coords),
-        ),
-      );
-    }
+      switch (event.state) {
+        case AppLifecycleState.paused:
+          if (!_settings.backgroundTracking) {
+            await LocationForegroundService.stop();
+          }
+        case AppLifecycleState.resumed:
+          if (!_settings.backgroundTracking && currentState.sessionId != null) {
+            await LocationForegroundService.start(
+              currentState.sessionId!,
+              _settings.interval,
+              backgroundTracking: _settings.backgroundTracking,
+              terminatedState: _settings.terminatedState,
+            );
+          }
+        case AppLifecycleState.detached:
+          if (!_settings.terminatedState) {
+            await _stopSideEffects();
+            emit(
+              currentState.copyWith(
+                isTracking: false,
+                sessionId: null,
+                trackPoints: [],
+              ),
+            );
+          }
+        default:
+          break;
+      }
+    });
   }
 
   Future<void> _start(Emitter<TrackerState> emit) async {
     final sessionId = await _db.insertSession(DateTime.now().toIso8601String());
+    await _recordCurrentPosition(sessionId);
     await _resumeSession(sessionId, emit);
   }
 
-  Future<void> _resumeSession(int sessionId, Emitter<TrackerState> emit) async {
-    await LocationForegroundService.start(sessionId, _settings.interval);
+  Future<void> _recordCurrentPosition(int sessionId) async {
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
+      ).timeout(const Duration(seconds: 15));
+      final accuracy = GpsAccuracy.fromMeters(position.accuracy);
+      await _db.insertCoordinate(
+        parentId: sessionId,
+        latitude: position.latitude,
+        longitude: position.longitude,
+        accuracy: accuracy.name,
+      );
+    } catch (_) {}
+  }
 
-    // Emit tracking state FIRST, before wiring the stream
+  Future<void> _resumeSession(int sessionId, Emitter<TrackerState> emit) async {
+    await LocationForegroundService.start(
+      sessionId,
+      _settings.interval,
+      backgroundTracking: _settings.backgroundTracking,
+      terminatedState: _settings.terminatedState,
+    );
+
     final s = state.mapOrNull(active: (a) => a);
     if (s != null) {
       emit(s.copyWith(isTracking: true, sessionId: sessionId, trackPoints: []));
     }
 
-    _durationTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!isClosed) add(const .tick());
-    });
-
-    _positionSub = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-    ).listen((pos) {
-      if (!isClosed) add(.positionStreamUpdate(pos.latitude, pos.longitude, pos.accuracy));
-    });
+    _positionSub =
+        Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+          ),
+        ).listen((pos) {
+          if (!isClosed) {
+            add(
+              .positionStreamUpdate(pos.latitude, pos.longitude, pos.accuracy),
+            );
+          }
+        });
 
     _coordinateSub = _db.watchSession(sessionId).listen((coords) {
       if (!isClosed) add(.coordinatesUpdated(coords));
@@ -165,22 +207,9 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
     }
   }
 
-  double _totalDistance(List<TrackingCoordinate> coords) {
-    if (coords.length < 2) return 0;
-    var total = 0.0;
-    for (var i = 1; i < coords.length; i++) {
-      total += Geolocator.distanceBetween(
-        coords[i - 1].latitude,
-        coords[i - 1].longitude,
-        coords[i].latitude,
-        coords[i].longitude,
-      );
-    }
-    return total;
-  }
-
   @override
   Future<void> close() {
+    _statsSub?.cancel();
     if (state.mapOrNull(active: (a) => a)?.isTracking == true) {
       _stopSideEffects();
     } else {

@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../i18n/strings.g.dart';
 import '../../../core/components/theme/app_colors.dart';
@@ -48,6 +47,7 @@ class HistoryDetailPage extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: AppBar(),
       body: Stack(
         children: [
           FlutterMap(
@@ -55,7 +55,7 @@ class HistoryDetailPage extends StatelessWidget {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.adoratech.adaro',
+                userAgentPackageName: 'com.adoratech.adora',
               ),
               if (points.length >= 2)
                 PolylineLayer(
@@ -77,12 +77,6 @@ class HistoryDetailPage extends StatelessWidget {
                 ],
               ),
             ],
-          ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: _BackButton(onTap: () => context.maybePop()),
-            ),
           ),
         ],
       ),
@@ -106,39 +100,6 @@ class HistoryDetailPage extends StatelessWidget {
               offset: const Offset(0, 2),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: AppColors.surfaceWhite,
-          shape: .circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: const Icon(
-          LucideIcons.arrowLeft,
-          size: 18,
-          color: AppColors.textPrimary,
         ),
       ),
     );

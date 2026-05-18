@@ -80,6 +80,7 @@ class _SettingsViewState extends State<_SettingsView>
                       color: AppColors.textPrimary,
                     ),
                   ),
+
                   SettingsSectionLabel(context.t.settings.sectionPermissions),
                   SettingsPermissionsSection(
                     locationGranted: active?.locationGranted ?? false,
@@ -87,6 +88,7 @@ class _SettingsViewState extends State<_SettingsView>
                     batteryOptimizationDisabled:
                         active?.batteryOptimizationDisabled ?? false,
                   ),
+
                   SettingsSectionLabel(context.t.settings.sectionTracking),
                   SettingsTrackingSection(
                     interval: active?.interval ?? .s30,
@@ -99,16 +101,16 @@ class _SettingsViewState extends State<_SettingsView>
                     ),
                     onToggleBackgroundTracking: () => context
                         .read<SettingsBloc>()
-                        .add(const SettingsEvent.toggleBackgroundTracking()),
+                        .add(const .toggleBackgroundTracking()),
                     onToggleTerminatedState: () => context
                         .read<SettingsBloc>()
-                        .add(const SettingsEvent.toggleTerminatedState()),
-                    onTogglePersistentNotification: () =>
-                        context.read<SettingsBloc>().add(
-                          const SettingsEvent.togglePersistentNotification(),
-                        ),
+                        .add(const .toggleTerminatedState()),
+                    onTogglePersistentNotification: () => context
+                        .read<SettingsBloc>()
+                        .add(const .togglePersistentNotification()),
                   ),
                   if (active?.interval == .s10) const BatteryWarningBox(),
+
                   SettingsSectionLabel(context.t.settings.sectionLanguage),
                   SettingsLanguageSection(
                     locale: active?.locale ?? .english,
@@ -116,15 +118,18 @@ class _SettingsViewState extends State<_SettingsView>
                       SettingsEvent.changeLocale(v),
                     ),
                   ),
+
                   DangerButton(
-                    onConfirm: () => context.read<SettingsBloc>().add(
-                      const SettingsEvent.clearData(),
-                    ),
+                    onConfirm: () {
+                      context.read<SettingsBloc>().add(const .clearData());
+                    },
                   ),
+
                   SizedBox(
                     height:
                         MediaQuery.viewPaddingOf(context).bottom +
-                        CPillNavBar.barHeight,
+                        CPillNavBar.barHeight +
+                        64,
                   ),
                 ],
               ),
