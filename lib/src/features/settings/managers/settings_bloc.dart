@@ -35,11 +35,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Future<void> _onInit(_Init event, Emitter<SettingsState> emit) async {
     final locationStatus = await Permission.locationAlways.status;
     final notifStatus = await Permission.notification.status;
+    final batteryStatus = await Permission.ignoreBatteryOptimizations.status;
 
     emit(
       SettingsState.active(
         locationGranted: locationStatus.isGranted,
         notificationGranted: notifStatus.isGranted,
+        batteryOptimizationDisabled: batteryStatus.isGranted,
         interval: _service.interval,
         backgroundTracking: _service.backgroundTracking,
         terminatedState: _service.terminatedState,
@@ -58,11 +60,13 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     final locationStatus = await Permission.locationAlways.status;
     final notifStatus = await Permission.notification.status;
+    final batteryStatus = await Permission.ignoreBatteryOptimizations.status;
 
     emit(
       active.copyWith(
         locationGranted: locationStatus.isGranted,
         notificationGranted: notifStatus.isGranted,
+        batteryOptimizationDisabled: batteryStatus.isGranted,
       ),
     );
   }
