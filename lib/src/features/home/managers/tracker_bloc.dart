@@ -23,7 +23,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   StreamSubscription<List<TrackingCoordinate>>? _coordinateSub;
   Timer? _durationTimer;
 
-  TrackerBloc(this._db, this._settings) : super(const TrackerState.initial()) {
+  TrackerBloc(this._db, this._settings) : super(const .initial()) {
     on<_Init>(_onInit);
     on<_ToggleTracking>(_onToggleTracking);
     on<_Tick>(_onTick);
@@ -42,7 +42,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
       final orphan = await _db.activeSession();
       if (orphan != null) await _resumeSession(orphan.id, emit);
     } catch (_) {
-      emit(const TrackerState.active());
+      emit(const .active());
     }
   }
 
@@ -99,31 +99,35 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   Future<void> _resumeSession(int sessionId, Emitter<TrackerState> emit) async {
     await LocationForegroundService.start(sessionId, _settings.interval);
 
+    // Emit tracking state FIRST, before wiring the stream
+    final s = state.mapOrNull(active: (a) => a);
+    if (s != null) {
+      emit(s.copyWith(isTracking: true, sessionId: sessionId, trackPoints: []));
+    }
+
     _durationTimer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!isClosed) add(const TrackerEvent.tick());
+      if (!isClosed) add(const .tick());
     });
 
     _coordinateSub = _db.watchSession(sessionId).listen((coords) {
       if (!isClosed) add(TrackerEvent.coordinatesUpdated(coords));
     });
-
-    final s = state.mapOrNull(active: (a) => a);
-    if (s != null) {
-      emit(s.copyWith(isTracking: true, sessionId: sessionId, trackPoints: []));
-    }
   }
 
-  Future<void> _stop(Emitter<TrackerState> emit) async {
-    final s = state.mapOrNull(active: (a) => a);
-
+  Future<void> _stopSideEffects() async {
     await _coordinateSub?.cancel();
     _coordinateSub = null;
     _durationTimer?.cancel();
     _durationTimer = null;
 
+    final sessionId = state.mapOrNull(active: (a) => a)?.sessionId;
     await LocationForegroundService.stop();
-    if (s?.sessionId != null) await _db.closeSession(s!.sessionId!);
+    if (sessionId != null) await _db.closeSession(sessionId);
+  }
 
+  Future<void> _stop(Emitter<TrackerState> emit) async {
+    final s = state.mapOrNull(active: (a) => a);
+    await _stopSideEffects();
     if (s != null) {
       emit(s.copyWith(isTracking: false, sessionId: null, trackPoints: []));
     }
@@ -145,8 +149,12 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
 
   @override
   Future<void> close() {
-    _coordinateSub?.cancel();
-    _durationTimer?.cancel();
+    if (state.mapOrNull(active: (a) => a)?.isTracking == true) {
+      _stopSideEffects();
+    } else {
+      _coordinateSub?.cancel();
+      _durationTimer?.cancel();
+    }
     return super.close();
   }
 }
