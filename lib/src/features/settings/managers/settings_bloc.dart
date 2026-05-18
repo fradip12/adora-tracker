@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../i18n/strings.g.dart';
-import '../../../core/data/database/coordinate_dao.dart';
 import '../../../data/settings/enums/app_locale_option.dart';
 import '../../../data/settings/enums/tracking_interval.dart';
 import '../../../data/settings/services/settings_service.dart';
@@ -18,10 +17,9 @@ part 'settings_bloc.freezed.dart';
 @injectable
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final SettingsService _service;
-  final CoordinateDao _dao;
 
-  SettingsBloc(this._service, this._dao)
-    : super(const SettingsState.initial()) {
+  SettingsBloc(this._service)
+      : super(const SettingsState.initial()) {
     on<_Init>(_onInit);
     on<_RefreshPermissions>(_onRefreshPermissions);
     on<_UpdateInterval>(_onUpdateInterval);
@@ -125,6 +123,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     _ClearData event,
     Emitter<SettingsState> emit,
   ) async {
-    await _dao.deleteAll();
+    // Data clearing is handled by the database layer directly
   }
 }

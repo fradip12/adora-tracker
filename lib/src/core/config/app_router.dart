@@ -3,7 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../core/data/models/coordinate_record.dart';
+import '../../core/data/database/app_database.dart';
 import '../../features/history/pages/history_detail_page.dart';
 import '../../features/history/pages/history_page.dart';
 import '../../features/home/pages/home_page.dart';
