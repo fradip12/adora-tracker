@@ -12,8 +12,9 @@ class LocationForegroundService {
       ),
       iosNotificationOptions: const IOSNotificationOptions(),
       foregroundTaskOptions: ForegroundTaskOptions(
-        eventAction:
-            ForegroundTaskEventAction.repeat(interval.duration.inMilliseconds),
+        eventAction: ForegroundTaskEventAction.repeat(
+          interval.duration.inMilliseconds,
+        ),
       ),
     );
   }
@@ -22,6 +23,7 @@ class LocationForegroundService {
     int sessionId,
     TrackingInterval interval,
   ) async {
+    await FlutterForegroundTask.requestNotificationPermission();
     _configure(interval);
     await FlutterForegroundTask.saveData(
       key: 'session_id',

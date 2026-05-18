@@ -21,6 +21,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   final SettingsService _settings;
 
   StreamSubscription<List<TrackingCoordinate>>? _coordinateSub;
+  StreamSubscription<Position>? _positionSub;
   Timer? _durationTimer;
 
   TrackerBloc(this._db, this._settings) : super(const .initial()) {
@@ -28,13 +29,14 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
     on<_ToggleTracking>(_onToggleTracking);
     on<_Tick>(_onTick);
     on<_CoordinatesUpdated>(_onCoordinatesUpdated);
+    on<_PositionStreamUpdate>(_onPositionStreamUpdate);
   }
 
   Future<void> _onInit(_Init event, Emitter<TrackerState> emit) async {
     try {
       final todayCoords = await _db.coordsToday();
       emit(
-        TrackerState.active(
+        .active(
           todayPoints: todayCoords.length,
           todayDistanceM: _totalDistance(todayCoords),
         ),
@@ -61,7 +63,27 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
 
   void _onTick(_Tick event, Emitter<TrackerState> emit) {
     final s = state.mapOrNull(active: (a) => a);
-    if (s != null) emit(s.copyWith(todayDurationSeconds: s.todayDurationSeconds + 1));
+    if (s != null) {
+      emit(s.copyWith(todayDurationSeconds: s.todayDurationSeconds + 1));
+    }
+  }
+
+  void _onPositionStreamUpdate(
+    _PositionStreamUpdate event,
+    Emitter<TrackerState> emit,
+  ) {
+    final s = state.mapOrNull(active: (a) => a);
+    if (s != null) {
+      emit(
+        s.copyWith(
+          position: (
+            lat: event.lat,
+            lng: event.lng,
+            accuracy: GpsAccuracy.fromMeters(event.accuracy).toMeters,
+          ),
+        ),
+      );
+    }
   }
 
   void _onCoordinatesUpdated(
@@ -83,7 +105,9 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
             lng: last.longitude,
             accuracy: accuracy.toMeters,
           ),
-          trackPoints: coords.map((c) => LatLng(c.latitude, c.longitude)).toList(),
+          trackPoints: coords
+              .map((c) => LatLng(c.latitude, c.longitude))
+              .toList(),
           todayPoints: coords.length,
           todayDistanceM: _totalDistance(coords),
         ),
@@ -109,14 +133,22 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
       if (!isClosed) add(const .tick());
     });
 
+    _positionSub = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+    ).listen((pos) {
+      if (!isClosed) add(.positionStreamUpdate(pos.latitude, pos.longitude, pos.accuracy));
+    });
+
     _coordinateSub = _db.watchSession(sessionId).listen((coords) {
-      if (!isClosed) add(TrackerEvent.coordinatesUpdated(coords));
+      if (!isClosed) add(.coordinatesUpdated(coords));
     });
   }
 
   Future<void> _stopSideEffects() async {
     await _coordinateSub?.cancel();
     _coordinateSub = null;
+    await _positionSub?.cancel();
+    _positionSub = null;
     _durationTimer?.cancel();
     _durationTimer = null;
 
@@ -153,6 +185,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
       _stopSideEffects();
     } else {
       _coordinateSub?.cancel();
+      _positionSub?.cancel();
       _durationTimer?.cancel();
     }
     return super.close();

@@ -19,8 +19,9 @@ class LocationForegroundTask extends TaskHandler {
   @override
   Future<void> onRepeatEvent(DateTime timestamp) async {
     try {
-      final sessionIdStr =
-          await FlutterForegroundTask.getData<String>(key: 'session_id');
+      final sessionIdStr = await FlutterForegroundTask.getData<String>(
+        key: 'session_id',
+      );
       if (sessionIdStr == null) return;
       final sessionId = int.parse(sessionIdStr);
 
@@ -28,7 +29,7 @@ class LocationForegroundTask extends TaskHandler {
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
         ),
-      );
+      ).timeout(const Duration(seconds: 15));
 
       final accuracy = GpsAccuracy.fromMeters(position.accuracy);
       await locator<AppDatabase>().insertCoordinate(

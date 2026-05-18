@@ -8,4 +8,9 @@ sealed class TrackerEvent with _$TrackerEvent {
   const factory TrackerEvent.coordinatesUpdated(
     List<TrackingCoordinate> coordinates,
   ) = _CoordinatesUpdated;
+  const factory TrackerEvent.positionStreamUpdate(
+    double lat,
+    double lng,
+    double accuracy,
+  ) = _PositionStreamUpdate;
 }
