@@ -62,7 +62,7 @@ class PermissionPrompterState extends State<PermissionPrompter>
 
   @override
   Widget build(BuildContext context) {
-    final data = (Platform.isIOS && widget.index == 1)
+    final data = (widget.index == 1)
         ? notificationPermission(context)
         : locationPermission(context);
 

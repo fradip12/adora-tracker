@@ -1,24 +1,24 @@
 {
   "intro": {
-    "slide1Title": "スマートな安全",
-    "slide1Desc": "AIがお子様のデバイスで有害なコンテンツをスキャンします。完全にオンデバイスで処理され、プライバシーは守られます。",
-    "slide2Title": "常につながる",
-    "slide2Desc": "リアルタイムの位置情報共有で、お子様がどこにいても安全を確認できます。",
-    "slide3Title": "完全な安心",
-    "slide3Desc": "オンラインと現実世界でお子様を守る一つのアプリ。シンプルで強力、信頼できます。",
+    "slide1Title": "正確なトラッキング",
+    "slide1Desc": "高精度でGPSルートを記録します。移動中、すべてのウェイポイントが自動的に保存されます。",
+    "slide2Title": "セッション履歴",
+    "slide2Desc": "記録したすべての移動を確認できます — 距離、所要時間、精度の統計がひとまとめに。",
+    "slide3Title": "常時動作",
+    "slide3Desc": "アプリを閉じていてもバックグラウンドでトラッキングを継続します。一歩も逃しません。",
     "getStarted": "はじめる",
     "skip": "スキップ"
   },
   "wizard": {
     "readyTitle": "準備完了です",
-    "readySubtitle": "Adoraがお子様を見守る準備ができました。"
+    "readySubtitle": "Adoraのセットアップが完了し、位置情報の記録を開始できます。"
   },
   "permission": {
-    "locationTitle": "位置情報へのアクセスを許可",
-    "locationDescription": "お子様の位置情報を共有することで、いつでも安全を確認できます。",
+    "locationTitle": "位置情報へのアクセス",
+    "locationDescription": "AdaroはGPSルートの記録とセッション中の距離計算のために、正確な位置情報が必要です。",
     "locationButton": "位置情報を許可",
-    "notificationTitle": "通知を許可",
-    "notificationDescription": "お子様の到着・出発や緊急時にすぐアラートを受け取れます。",
+    "notificationTitle": "通知を受け取る",
+    "notificationDescription": "常時通知によりトラッキングを可視化し、システムによるセッションの中断を防ぎます。",
     "notificationButton": "通知を許可"
   },
   "settings": {
