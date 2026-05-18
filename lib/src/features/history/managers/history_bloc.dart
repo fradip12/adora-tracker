@@ -15,7 +15,7 @@ part 'history_bloc.freezed.dart';
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   final AppDatabase _db;
 
-  HistoryBloc(this._db) : super(const HistoryState.initial()) {
+  HistoryBloc(this._db) : super(const .initial()) {
     on<_Load>(_onLoad);
     on<_FilterChanged>(_onFilterChanged);
     on<_Refresh>(_onRefresh);
@@ -41,7 +41,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     HistoryFilter filter,
     Emitter<HistoryState> emit,
   ) async {
-    emit(HistoryState.loading(filter: filter));
+    emit(.loading(filter: filter));
 
     final ascending = await _fetchRecords(filter);
     final records = ascending.reversed.toList();
@@ -56,7 +56,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
             records.length;
 
     emit(
-      HistoryState.active(
+      .active(
         filter: filter,
         records: records,
         pointCount: pointCount,
