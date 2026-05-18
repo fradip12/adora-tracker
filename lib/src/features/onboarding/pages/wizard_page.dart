@@ -16,6 +16,7 @@ import '../../../core/config/app_router.dart';
 import '../../../core/utils/haptic_helper.dart';
 import '../../../data/misc/models/ripple.dart';
 import '../../../data/misc/models/wizard_slide.dart';
+import '../../../data/settings/services/settings_service.dart';
 import '../managers/wizard_permission_bloc.dart';
 import '../widgets/c_permission_prompter.dart';
 import '../widgets/c_ripple_overlay.dart';
@@ -155,6 +156,7 @@ class _WizardViewState extends State<_WizardView>
     return BlocConsumer<WizardPermissionBloc, WizardPermissionState>(
       listenWhen: (prev, curr) => curr.isComplete && !prev.isComplete,
       listener: (context, state) {
+        locator<SettingsService>().setOnboardingDone();
         context.router.replaceAll([const RootRoute()]);
       },
       builder: (context, state) {

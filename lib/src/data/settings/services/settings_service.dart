@@ -16,6 +16,7 @@ class SettingsService {
   static const _keyPersistentNotif = 'settings_persistent_notif';
   static const _keyLocale = 'settings_locale';
   static const _keyIsTracking = 'tracker_is_tracking';
+  static const _keyOnboardingDone = 'onboarding_done';
 
   TrackingInterval get interval =>
       TrackingInterval.fromPrefValue(_prefs.getString(_keyInterval) ?? '');
@@ -42,6 +43,10 @@ class SettingsService {
   bool get isTracking => _prefs.getBool(_keyIsTracking) ?? false;
 
   Future<void> setIsTracking(bool v) => _prefs.setBool(_keyIsTracking, v);
+
+  bool get onboardingDone => _prefs.getBool(_keyOnboardingDone) ?? false;
+
+  Future<void> setOnboardingDone() => _prefs.setBool(_keyOnboardingDone, true);
 
   AppLocaleOption get locale =>
       AppLocaleOption.fromPrefValue(_prefs.getString(_keyLocale) ?? '');

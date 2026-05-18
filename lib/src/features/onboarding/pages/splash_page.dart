@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/components/theme/app_colors.dart';
+import '../../../core/config/app_di.dart';
 import '../../../core/config/app_router.dart';
+import '../../../data/settings/services/settings_service.dart';
 import '../widgets/c_animated_logo.dart';
 
 @RoutePage()
@@ -37,7 +39,8 @@ class _SplashPageState extends State<SplashPage>
 
   void _navigateNext() {
     if (!mounted) return;
-    context.router.replaceAll([const IntroRoute()]);
+    final done = locator<SettingsService>().onboardingDone;
+    context.router.replaceAll([done ? const RootRoute() : const IntroRoute()]);
   }
 
   @override
