@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../core/config/app_di.dart';
 import '../../../core/config/app_router.dart';
 import '../../../core/extension/ext_overlays.dart';
 import '../../home/managers/tracker_bloc.dart';
@@ -32,8 +31,6 @@ class _RootPageState extends State<RootPage> with WidgetsBindingObserver {
       _router = context.router;
       _router?.addListener(_onRouteChanged);
     });
-
-    context.read<TrackerBloc>().add(const .init());
   }
 
   @override
@@ -77,6 +74,7 @@ class _RootPageState extends State<RootPage> with WidgetsBindingObserver {
           context.showToast('Tracking completed', type: .success),
       child: Scaffold(
         extendBody: true,
+        backgroundColor: Colors.amber,
         floatingActionButton: BlocBuilder<TrackerBloc, TrackerState>(
           builder: (context, state) {
             final isTracking =
@@ -84,7 +82,8 @@ class _RootPageState extends State<RootPage> with WidgetsBindingObserver {
 
             return HomeTrackingFab(
               isTracking: isTracking,
-              onTap: () => locator<TrackerBloc>().add(const .toggleTracking()),
+              onTap: () =>
+                  context.read<TrackerBloc>().add(const .toggleTracking()),
             );
           },
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../i18n/strings.g.dart';
-import '../../../data/history/enums/accuracy_level.dart';
+import '../../../../../i18n/strings.g.dart';
+import '../../../../data/history/enums/accuracy_level.dart';
 
 extension _AccuracyLevelColors on AccuracyLevel {
   Color get bgColor => switch (this) {

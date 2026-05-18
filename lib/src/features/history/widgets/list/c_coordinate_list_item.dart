@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../core/components/theme/app_colors.dart';
-import '../../../data/history/models/session_summary.dart';
+import '../../../../core/components/theme/app_colors.dart';
+import '../../../../data/history/models/session_summary.dart';
 import 'c_accuracy_badge.dart';
 
 class SessionListItem extends StatelessWidget {

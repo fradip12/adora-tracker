@@ -10,9 +10,9 @@ import '../../../core/config/app_di.dart';
 import '../../../core/config/app_router.dart';
 import '../../root/widgets/c_pill_nav_bar.dart';
 import '../managers/history_bloc.dart';
-import '../widgets/c_filter_chip_bar.dart';
-import '../widgets/v_history_list_section.dart';
-import '../widgets/v_history_stats_section.dart';
+import '../widgets/list/c_filter_chip_bar.dart';
+import '../widgets/list/v_history_list_section.dart';
+import '../widgets/list/v_history_stats_section.dart';
 
 @RoutePage()
 class HistoryPage extends StatelessWidget {

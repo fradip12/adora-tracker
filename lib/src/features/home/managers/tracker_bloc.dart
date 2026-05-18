@@ -21,14 +21,13 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   final AppDatabase _db;
   final SettingsService _settings;
 
-  StreamSubscription<List<TrackingCoordinate>>? _statsSub;
   StreamSubscription<List<TrackingCoordinate>>? _coordinateSub;
   StreamSubscription<Position>? _positionSub;
-  Timer? _durationTimer;
 
   TrackerBloc(this._db, this._settings) : super(const .initial()) {
     on<_Init>((event, emit) async {
       try {
+        emit(const .active());
         final orphan = await _db.activeSession();
         if (orphan != null) await _resumeSession(orphan.id, emit);
       } catch (_) {
@@ -191,8 +190,6 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
     _coordinateSub = null;
     await _positionSub?.cancel();
     _positionSub = null;
-    _durationTimer?.cancel();
-    _durationTimer = null;
 
     final sessionId = state.mapOrNull(active: (a) => a)?.sessionId;
     await LocationForegroundService.stop();
@@ -209,13 +206,11 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
 
   @override
   Future<void> close() {
-    _statsSub?.cancel();
     if (state.mapOrNull(active: (a) => a)?.isTracking == true) {
       _stopSideEffects();
     } else {
       _coordinateSub?.cancel();
       _positionSub?.cancel();
-      _durationTimer?.cancel();
     }
     return super.close();
   }

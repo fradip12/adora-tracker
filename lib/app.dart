@@ -29,7 +29,8 @@ class _AdoraAppState extends State<AdoraApp> {
     return TranslationProvider(
       child: Builder(
         builder: (ctx) => BlocProvider(
-          create: (context) => locator<TrackerBloc>(),
+          create: (context) =>
+              locator<TrackerBloc>()..add(const TrackerEvent.init()),
           child: MaterialApp.router(
             title: 'Adora',
             debugShowCheckedModeBanner: false,

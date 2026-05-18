@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../i18n/strings.g.dart';
-import '../../../core/components/theme/app_colors.dart';
-import '../../../core/components/theme/app_spacing.dart';
-import '../../../data/history/enums/history_filter.dart';
+import '../../../../../i18n/strings.g.dart';
+import '../../../../core/components/theme/app_colors.dart';
+import '../../../../core/components/theme/app_spacing.dart';
+import '../../../../data/history/enums/history_filter.dart';
 
 class FilterChipBar extends StatelessWidget {
   const FilterChipBar({

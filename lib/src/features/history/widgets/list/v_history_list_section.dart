@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../i18n/strings.g.dart';
-import '../../../core/components/theme/app_colors.dart';
-import '../../../core/components/theme/app_spacing.dart';
-import '../../../data/history/models/session_summary.dart';
+import '../../../../../i18n/strings.g.dart';
+import '../../../../core/components/theme/app_colors.dart';
+import '../../../../core/components/theme/app_spacing.dart';
+import '../../../../data/history/models/session_summary.dart';
 import 'c_coordinate_list_item.dart';
 
 class HistoryListSection extends StatelessWidget {

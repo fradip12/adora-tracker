@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/components/theme/app_colors.dart';
-import '../../../core/components/theme/app_spacing.dart';
+import '../../../../core/components/theme/app_colors.dart';
+import '../../../../core/components/theme/app_spacing.dart';
 
 class StatsCard extends StatelessWidget {
   const StatsCard({
