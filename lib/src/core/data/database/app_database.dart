@@ -42,11 +42,11 @@ extension TrackingSessionsDao on AppDatabase {
   Future<void> closeSession(int id) async {
     final row =
         await (select(trackingSessions)..where((t) => t.id.equals(id))).getSingle();
-    final durationMs =
-        DateTime.now().difference(DateTime.parse(row.startedTime)).inMilliseconds;
+    final stoppedAt = DateTime.now();
+    final durationMs = stoppedAt.difference(DateTime.parse(row.startedTime)).inMilliseconds;
     await (update(trackingSessions)..where((t) => t.id.equals(id))).write(
       TrackingSessionsCompanion(
-        stoppedTime: Value(DateTime.now().toIso8601String()),
+        stoppedTime: Value(stoppedAt.toIso8601String()),
         duration: Value(durationMs),
       ),
     );
@@ -58,7 +58,7 @@ extension TrackingSessionsDao on AppDatabase {
 
   Future<List<TrackingSession>> allSessions() =>
       (select(trackingSessions)
-            ..orderBy([(t) => OrderingTerm.desc(t.id)]))
+            ..orderBy([(t) => .desc(t.id)]))
           .get();
 }
 
@@ -84,13 +84,13 @@ extension TrackingCoordinatesDao on AppDatabase {
   Stream<List<TrackingCoordinate>> watchSession(int sessionId) =>
       (select(trackingCoordinates)
             ..where((t) => t.parentId.equals(sessionId))
-            ..orderBy([(t) => OrderingTerm.asc(t.timestamp)]))
+            ..orderBy([(t) => .asc(t.timestamp)]))
           .watch();
 
   Future<List<TrackingCoordinate>> coordsForSession(int sessionId) =>
       (select(trackingCoordinates)
             ..where((t) => t.parentId.equals(sessionId))
-            ..orderBy([(t) => OrderingTerm.asc(t.timestamp)]))
+            ..orderBy([(t) => .asc(t.timestamp)]))
           .get();
 
   Future<List<TrackingCoordinate>> coordsByDateRange(DateTime from, DateTime to) =>
@@ -100,7 +100,7 @@ extension TrackingCoordinatesDao on AppDatabase {
                   t.timestamp.isBiggerOrEqualValue(from.toIso8601String()) &
                   t.timestamp.isSmallerThanValue(to.toIso8601String()),
             )
-            ..orderBy([(t) => OrderingTerm.asc(t.timestamp)]))
+            ..orderBy([(t) => .asc(t.timestamp)]))
           .get();
 
   Future<List<TrackingCoordinate>> coordsToday() {
@@ -111,6 +111,6 @@ extension TrackingCoordinatesDao on AppDatabase {
 
   Future<List<TrackingCoordinate>> allCoords() =>
       (select(trackingCoordinates)
-            ..orderBy([(t) => OrderingTerm.asc(t.timestamp)]))
+            ..orderBy([(t) => .asc(t.timestamp)]))
           .get();
 }
