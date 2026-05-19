@@ -19,38 +19,29 @@ class SettingsService {
   static const _keyOnboardingDone = 'onboarding_done';
 
   TrackingInterval get interval =>
-      TrackingInterval.fromPrefValue(_prefs.getString(_keyInterval) ?? '');
+      .fromPrefValue(_prefs.getString(_keyInterval) ?? '');
 
-  Future<void> setInterval(TrackingInterval v) =>
-      _prefs.setString(_keyInterval, v.prefValue);
-
+  /// Getter
   bool get backgroundTracking => _prefs.getBool(_keyBgTracking) ?? true;
-
-  Future<void> setBackgroundTracking(bool v) =>
-      _prefs.setBool(_keyBgTracking, v);
-
   bool get terminatedState => _prefs.getBool(_keyTerminatedState) ?? false;
-
-  Future<void> setTerminatedState(bool v) =>
-      _prefs.setBool(_keyTerminatedState, v);
-
+  bool get onboardingDone => _prefs.getBool(_keyOnboardingDone) ?? false;
+  bool get isTracking => _prefs.getBool(_keyIsTracking) ?? false;
   bool get persistentNotification =>
       _prefs.getBool(_keyPersistentNotif) ?? true;
+  AppLocaleOption get locale =>
+      .fromPrefValue(_prefs.getString(_keyLocale) ?? '');
 
+  /// Setter
+  Future<void> setInterval(TrackingInterval v) =>
+      _prefs.setString(_keyInterval, v.prefValue);
+  Future<void> setBackgroundTracking(bool v) =>
+      _prefs.setBool(_keyBgTracking, v);
+  Future<void> setTerminatedState(bool v) =>
+      _prefs.setBool(_keyTerminatedState, v);
   Future<void> setPersistentNotification(bool v) =>
       _prefs.setBool(_keyPersistentNotif, v);
-
-  bool get isTracking => _prefs.getBool(_keyIsTracking) ?? false;
-
   Future<void> setIsTracking(bool v) => _prefs.setBool(_keyIsTracking, v);
-
-  bool get onboardingDone => _prefs.getBool(_keyOnboardingDone) ?? false;
-
   Future<void> setOnboardingDone() => _prefs.setBool(_keyOnboardingDone, true);
-
-  AppLocaleOption get locale =>
-      AppLocaleOption.fromPrefValue(_prefs.getString(_keyLocale) ?? '');
-
   Future<void> setLocale(AppLocaleOption v) =>
       _prefs.setString(_keyLocale, v.prefValue);
 }

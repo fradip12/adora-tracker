@@ -29,7 +29,14 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
       try {
         emit(const .active());
         final orphan = await _db.activeSession();
-        if (orphan != null) await _resumeSession(orphan.id, emit);
+
+        if (orphan != null) {
+          if (_settings.terminatedState) {
+            await _resumeSession(orphan.id, emit);
+          } else {
+            await _db.closeSession(orphan.id);
+          }
+        }
       } catch (_) {
         emit(const .active());
       }
@@ -205,12 +212,13 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   }
 
   @override
-  Future<void> close() {
-    if (state.mapOrNull(active: (a) => a)?.isTracking == true) {
-      _stopSideEffects();
+  Future<void> close() async {
+    final active = state.mapOrNull(active: (a) => a);
+    if (active?.isTracking == true && !_settings.terminatedState) {
+      await _stopSideEffects();
     } else {
-      _coordinateSub?.cancel();
-      _positionSub?.cancel();
+      await _coordinateSub?.cancel();
+      await _positionSub?.cancel();
     }
     return super.close();
   }

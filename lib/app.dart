@@ -18,10 +18,15 @@ class AdoraApp extends StatefulWidget {
 class _AdoraAppState extends State<AdoraApp> {
   late final AppRouter _appRouter;
 
+  late TrackerBloc trackerBloc;
+
   @override
   void initState() {
     super.initState();
     _appRouter = AppRouter();
+
+    trackerBloc = locator<TrackerBloc>();
+    trackerBloc.add(const .init());
   }
 
   @override
@@ -29,8 +34,7 @@ class _AdoraAppState extends State<AdoraApp> {
     return TranslationProvider(
       child: Builder(
         builder: (ctx) => BlocProvider(
-          create: (context) =>
-              locator<TrackerBloc>()..add(const TrackerEvent.init()),
+          create: (context) => trackerBloc,
           child: MaterialApp.router(
             title: 'Adora',
             debugShowCheckedModeBanner: false,
