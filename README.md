@@ -55,6 +55,8 @@ Tracking survives a full app close (swiped away from the task switcher or killed
 - On next launch the session is automatically detected and the tracking state is fully restored
 - Configurable in Settings → **Continues After Close**
 
+> **Platform note:** Terminated-state tracking is **Android only**. iOS does not support foreground services that persist after the app is killed — background tracking (app in background / app switcher) is fully supported on iOS, but the "Continues After Close" setting is hidden on iOS devices.
+
 > https://github.com/user-attachments/assets/f7f4ea69-df48-413c-a681-07264088bbff
 
 
