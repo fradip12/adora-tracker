@@ -30,7 +30,7 @@ Real-time GPS tracking with a live map view and coordinate readout.
 - Tracking status chip (active / idle)
 - Persistent foreground notification showing current coordinates and tracking mode while a session is running
 
-> 📹 _Screen recording placeholder — Starting and stopping a tracking session_
+> https://github.com/user-attachments/assets/ce3c7f93-9a34-4f3a-96e4-4e0337f0fb3c
 
 ---
 
@@ -42,7 +42,8 @@ Tracking continues when the app is moved to the background (home button / app sw
 - Notification persists so the user can see live coordinates without opening the app
 - Configurable in Settings → **Background Tracking**
 
-> 📹 _Screen recording placeholder — App backgrounded, coordinates still updating_
+>https://github.com/user-attachments/assets/25497002-43a5-4170-a90d-2cfdf4359c51
+
 
 ---
 
@@ -54,7 +55,8 @@ Tracking survives a full app close (swiped away from the task switcher or killed
 - On next launch the session is automatically detected and the tracking state is fully restored
 - Configurable in Settings → **Continues After Close**
 
-> 📹 _Screen recording placeholder — App killed and reopened with tracking resumed_
+> https://github.com/user-attachments/assets/f7f4ea69-df48-413c-a681-07264088bbff
+
 
 ---
 
@@ -67,8 +69,6 @@ Browse all past and current tracking sessions with filterable date ranges.
 - Accuracy badge per coordinate entry (high / medium / low)
 - Tap a session to open the detail view
 
-> 📹 _Screen recording placeholder — Browsing and filtering session history_
-
 ---
 
 ### Session Detail
@@ -77,8 +77,6 @@ Full coordinate log for a single session.
 
 - Scrollable list of every recorded point with timestamp and accuracy
 - Duration and start time displayed in the header
-
-> 📹 _Screen recording placeholder — Session detail view_
 
 ---
 
@@ -93,6 +91,7 @@ Full coordinate log for a single session.
 | Continues After Close | Restore the session when the app is reopened after being killed | Off |
 | Persistent Notification | Show live coordinates in the notification while tracking | On |
 
+
 #### Permissions
 
 Live status of Location, Notification, and Battery Optimisation permissions with one-tap shortcuts to the system settings page.
@@ -101,7 +100,7 @@ Live status of Location, Notification, and Battery Optimisation permissions with
 
 Switch the app language. Supported locales: English, French, Indonesian, Japanese, Korean, Burmese, Russian, Simplified Chinese.
 
-> 📹 _Screen recording placeholder — Settings page walkthrough_
+> https://github.com/user-attachments/assets/85294a24-e96c-4aa7-b8e1-5d9bf615f7a3
 
 ---
 
