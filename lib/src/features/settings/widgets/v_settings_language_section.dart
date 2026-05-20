@@ -47,7 +47,7 @@ class SettingsLanguageSection extends StatelessWidget {
                 locale.nativeName,
                 style: const TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: .w500,
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -76,7 +76,7 @@ class _LanguagePickerSheet extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: .min,
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -84,7 +84,7 @@ class _LanguagePickerSheet extends StatelessWidget {
                 context.t.settings.languageSelectTitle,
                 style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: .w600,
                   color: AppColors.textPrimary,
                 ),
               ),

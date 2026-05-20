@@ -40,7 +40,7 @@ class PermBadge extends StatelessWidget {
         label,
         style: TextStyle(
           fontSize: 11,
-          fontWeight: FontWeight.w700,
+          fontWeight: .w700,
           color: textColor,
           letterSpacing: 0.02 * 11,
         ),

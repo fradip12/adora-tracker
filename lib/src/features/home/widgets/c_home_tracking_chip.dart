@@ -61,7 +61,7 @@ class _HomeTrackingChipState extends State<HomeTrackingChip>
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
+                          shape: .circle,
                           color: AppColors.primary.withValues(
                             alpha: 0.4 * (1 - _pulse.value),
                           ),
@@ -73,7 +73,7 @@ class _HomeTrackingChipState extends State<HomeTrackingChip>
                   width: 10,
                   height: 10,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                    shape: .circle,
                     color: isTracking
                         ? AppColors.primary
                         : AppColors.textTertiary,
@@ -89,7 +89,7 @@ class _HomeTrackingChipState extends State<HomeTrackingChip>
                 : context.t.home.trackingPaused,
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontWeight: .w600,
               color: isTracking
                   ? AppColors.primaryDark
                   : AppColors.textSecondary,
@@ -102,7 +102,7 @@ class _HomeTrackingChipState extends State<HomeTrackingChip>
               width: 22,
               height: 22,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                shape: .circle,
                 border: Border.all(color: AppColors.primary),
               ),
               child: const Icon(

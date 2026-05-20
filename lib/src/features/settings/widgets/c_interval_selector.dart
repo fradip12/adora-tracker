@@ -24,7 +24,7 @@ class IntervalSelector extends StatelessWidget {
         borderRadius: .circular(context.s),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: .min,
         children: TrackingInterval.values.map((interval) {
           final isActive = interval == selected;
 

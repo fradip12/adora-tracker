@@ -17,10 +17,9 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> with WidgetsBindingObserver {
+  static const _routes = [HomeRoute(), HistoryRoute(), SettingsRoute()];
   int _activeIndex = 0;
   StackRouter? _router;
-
-  static const _routes = [HomeRoute(), HistoryRoute(), SettingsRoute()];
 
   @override
   void initState() {
@@ -36,6 +35,7 @@ class _RootPageState extends State<RootPage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+
     _router?.removeListener(_onRouteChanged);
     super.dispose();
   }
@@ -74,7 +74,6 @@ class _RootPageState extends State<RootPage> with WidgetsBindingObserver {
           context.showToast('Tracking completed', type: .success),
       child: Scaffold(
         extendBody: true,
-        backgroundColor: Colors.amber,
         floatingActionButton: BlocBuilder<TrackerBloc, TrackerState>(
           builder: (context, state) {
             final isTracking =

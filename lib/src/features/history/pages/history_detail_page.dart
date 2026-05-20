@@ -102,7 +102,7 @@ class HistoryDetailPage extends StatelessWidget {
           ),
           Flexible(
             child: ListView.separated(
-              padding: EdgeInsets.symmetric(horizontal: context.m),
+              padding: .symmetric(horizontal: context.m),
               itemCount: records.length,
               separatorBuilder: (_, _) => context.xxs.vSpace,
               itemBuilder: (_, index) {

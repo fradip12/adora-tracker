@@ -30,11 +30,11 @@ class CPointRow extends StatelessWidget {
         : AppColors.border;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const .symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(12),
+        border: .all(color: AppColors.border),
+        borderRadius: .circular(12),
       ),
       child: Row(
         spacing: 10,
@@ -44,14 +44,14 @@ class CPointRow extends StatelessWidget {
             height: 28,
             decoration: BoxDecoration(
               color: dotColor.withValues(alpha: 0.12),
-              shape: BoxShape.circle,
+              shape: .circle,
             ),
-            alignment: Alignment.center,
+            alignment: .center,
             child: Text(
               '${index + 1}',
               style: TextStyle(
                 fontSize: 11,
-                fontWeight: FontWeight.w700,
+                fontWeight: .w700,
                 color: isFirst || isLast ? dotColor : AppColors.textTertiary,
               ),
             ),

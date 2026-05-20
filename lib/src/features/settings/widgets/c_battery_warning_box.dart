@@ -24,7 +24,7 @@ class BatteryWarningBox extends StatelessWidget {
           const Icon(
             LucideIcons.triangleAlert,
             size: 18,
-            color: Color(0xFFF59E0B),
+            color: AppColors.warning,
           ),
 
           Expanded(

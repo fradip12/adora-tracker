@@ -10,7 +10,7 @@ class SettingsSectionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 2),
+      padding: const .only(left: 2),
       child: Text(
         text.toUpperCase(),
         style: const TextStyle(

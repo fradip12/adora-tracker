@@ -117,7 +117,7 @@ class PermissionPrompterState extends State<PermissionPrompter>
                   width: context.buttonHeight,
                   decoration: BoxDecoration(
                     color: widget.foreground,
-                    borderRadius: BorderRadius.circular(context.radiusLarge),
+                    borderRadius: .circular(context.radiusLarge),
                   ),
                   alignment: .center,
                   child: Icon(

@@ -39,7 +39,7 @@ class SessionListItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
+        padding: const .symmetric(horizontal: 14, vertical: 13),
         decoration: BoxDecoration(
           color: AppColors.surfaceWhite,
           border: .all(color: AppColors.border),

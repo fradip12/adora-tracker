@@ -39,7 +39,7 @@ class GlobalButton extends StatelessWidget {
             child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white),
           )
         : Row(
-            mainAxisSize: isExpanded ? MainAxisSize.max : MainAxisSize.min,
+            mainAxisSize: isExpanded ? .max : .min,
             mainAxisAlignment: .center,
             children: [
               if (icon != null) ...[icon!, SizedBox(width: context.s)],

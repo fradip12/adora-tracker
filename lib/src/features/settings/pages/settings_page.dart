@@ -76,12 +76,13 @@ class _SettingsViewState extends State<_SettingsView>
                     context.t.settings.title,
                     style: const TextStyle(
                       fontSize: 28,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: .w700,
                       letterSpacing: -0.025 * 28,
                       color: AppColors.textPrimary,
                     ),
                   ),
 
+                  // Permissions
                   SettingsSectionLabel(context.t.settings.sectionPermissions),
                   SettingsPermissionsSection(
                     locationGranted: active?.locationGranted ?? false,
@@ -90,6 +91,7 @@ class _SettingsViewState extends State<_SettingsView>
                         active?.batteryOptimizationDisabled ?? false,
                   ),
 
+                  // Trackers
                   SettingsSectionLabel(context.t.settings.sectionTracking),
                   SettingsTrackingSection(
                     interval: active?.interval ?? .s30,
@@ -114,6 +116,7 @@ class _SettingsViewState extends State<_SettingsView>
                   ),
                   if (active?.interval == .s10) const BatteryWarningBox(),
 
+                  // Languages
                   SettingsSectionLabel(context.t.settings.sectionLanguage),
                   SettingsLanguageSection(
                     locale: active?.locale ?? .english,
