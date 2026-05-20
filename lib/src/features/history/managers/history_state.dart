@@ -15,4 +15,9 @@ abstract class HistoryState with _$HistoryState {
     @Default(0.0) double totalDistanceKm,
     @Default(0.0) double avgAccuracy,
   }) = _Active;
+
+  const factory HistoryState.error({
+    required Exception exception,
+    @Default(HistoryFilter.today) HistoryFilter filter,
+  }) = _Error;
 }
