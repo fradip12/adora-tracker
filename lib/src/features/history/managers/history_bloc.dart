@@ -2,9 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../core/data/database/app_database.dart';
+import '../../../core/models/result.dart';
 import '../../../data/history/enums/history_filter.dart';
 import '../../../data/history/models/session_summary.dart';
+import '../../../data/history/repository/history_repository.dart';
 
 part 'history_state.dart';
 part 'history_event.dart';
@@ -12,9 +13,9 @@ part 'history_bloc.freezed.dart';
 
 @injectable
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
-  final AppDatabase _db;
+  final HistoryRepository _repository;
 
-  HistoryBloc(this._db) : super(const .initial()) {
+  HistoryBloc(this._repository) : super(const .initial()) {
     on<_Load>(_onLoad);
     on<_FilterChanged>(_onFilterChanged);
     on<_Refresh>(_onRefresh);
@@ -42,58 +43,34 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   ) async {
     emit(.loading(filter: filter));
 
-    final rawSessions = await _fetchSessions(filter);
-    final sessions = await Future.wait(
-      rawSessions.map((s) async {
-        final coords = await _db.coordsForSession(s.id);
-        return SessionSummary(
-          session: s,
-          coordinates: coords,
-          distanceKm: SessionSummary.computeDistanceKm(coords),
+    final result = await _repository.fetchSummaries(filter);
+
+    switch (result) {
+      case Ok(:final value):
+        final sessions = value;
+        final totalPoints = sessions.fold(0, (sum, s) => sum + s.pointCount);
+        final totalDistanceKm = sessions.fold<double>(
+          0,
+          (sum, s) => sum + s.distanceKm,
         );
-      }),
-    );
+        final allCoords = sessions.expand((s) => s.coordinates).toList();
+        final avgAccuracy = allCoords.isEmpty
+            ? 0.0
+            : sessions.fold<double>(0, (sum, s) => sum + s.avgAccuracyMeters) /
+                  sessions.length;
 
-    final totalPoints = sessions.fold(0, (sum, s) => sum + s.pointCount);
-    final totalDistanceKm = sessions.fold<double>(
-      0,
-      (sum, s) => sum + s.distanceKm,
-    );
-    final allCoords = sessions.expand((s) => s.coordinates).toList();
-    final avgAccuracy = allCoords.isEmpty
-        ? 0.0
-        : sessions.fold<double>(0, (sum, s) => sum + s.avgAccuracyMeters) /
-              sessions.length;
+        emit(
+          .active(
+            filter: filter,
+            sessions: sessions,
+            totalPoints: totalPoints,
+            totalDistanceKm: totalDistanceKm,
+            avgAccuracy: avgAccuracy,
+          ),
+        );
 
-    emit(
-      .active(
-        filter: filter,
-        sessions: sessions,
-        totalPoints: totalPoints,
-        totalDistanceKm: totalDistanceKm,
-        avgAccuracy: avgAccuracy,
-      ),
-    );
-  }
-
-  Future<List<TrackingSession>> _fetchSessions(HistoryFilter filter) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    return switch (filter) {
-      HistoryFilter.today => _db.sessionsByDateRange(
-        today,
-        today.add(const Duration(days: 1)),
-      ),
-      HistoryFilter.yesterday => _db.sessionsByDateRange(
-        today.subtract(const Duration(days: 1)),
-        today,
-      ),
-      HistoryFilter.thisWeek => _db.sessionsByDateRange(
-        today.subtract(Duration(days: today.weekday - 1)),
-        today.add(const Duration(days: 1)),
-      ),
-      HistoryFilter.all => _db.allSessions(),
-    };
+      case Error(:final error):
+        emit(.error(filter: filter, exception: error));
+    }
   }
 }
