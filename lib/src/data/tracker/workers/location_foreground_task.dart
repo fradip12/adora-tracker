@@ -20,9 +20,6 @@ class LocationForegroundTask extends TaskHandler {
 
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
-    // iOS location is driven from the main isolate by LocationForegroundService
-    // because the secondary Flutter engine requires native plugin-registrant
-    // wiring and is unreliable for CLLocationManager streams.
     if (Platform.isIOS) return;
 
     await configureDependencies();

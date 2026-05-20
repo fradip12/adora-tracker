@@ -6,3 +6,13 @@ extension MiscColorX on Color {
     return withAlpha(alpha);
   }
 }
+
+String buildTrackingStatusText({
+  required bool backgroundTracking,
+  required bool terminatedState,
+}) {
+  final parts = <String>['Tracking active'];
+  if (backgroundTracking) parts.add('background ON');
+  if (terminatedState) parts.add('continues after close');
+  return parts.join(' · ');
+}

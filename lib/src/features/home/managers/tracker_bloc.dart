@@ -10,7 +10,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/data/database/app_database.dart';
 import '../../../data/settings/services/settings_service.dart';
 import '../../../data/tracker/enums/gps_accuracy.dart';
-import '../../../data/tracker/services/location_foreground_service.dart';
+import '../../../data/tracker/services/tracker_service.dart';
 
 part 'tracker_bloc.freezed.dart';
 part 'tracker_event.dart';
@@ -20,11 +20,13 @@ part 'tracker_state.dart';
 class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   final AppDatabase _db;
   final SettingsService _settings;
+  final TrackerService _tracker;
 
   StreamSubscription<List<TrackingCoordinate>>? _coordinateSub;
   StreamSubscription<Position>? _positionSub;
 
-  TrackerBloc(this._db, this._settings) : super(const .initial()) {
+  TrackerBloc(this._db, this._settings, this._tracker)
+    : super(const .initial()) {
     on<_Init>((event, emit) async {
       try {
         emit(const .active());
@@ -92,14 +94,14 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
       );
 
       if (currentState.isTracking) {
-        final statusText = LocationForegroundService.buildStatusText(
+        final statusText = _tracker.buildStatusText(
           backgroundTracking: _settings.backgroundTracking,
           terminatedState: _settings.terminatedState,
         );
         final notifText = _settings.persistentNotification
             ? '${event.lat.toStringAsFixed(5)}, ${event.lng.toStringAsFixed(5)} ±${GpsAccuracy.fromMeters(event.accuracy).toMeters.toStringAsFixed(0)}m · $statusText'
             : statusText;
-        LocationForegroundService.updateNotification(notifText);
+        _tracker.updateNotification(notifText);
       }
     });
 
@@ -110,11 +112,11 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
       switch (event.state) {
         case AppLifecycleState.paused:
           if (!_settings.backgroundTracking) {
-            await LocationForegroundService.stop();
+            await _tracker.stop();
           }
         case AppLifecycleState.resumed:
           if (!_settings.backgroundTracking && currentState.sessionId != null) {
-            await LocationForegroundService.start(
+            await _tracker.start(
               currentState.sessionId!,
               _settings.interval,
               backgroundTracking: _settings.backgroundTracking,
@@ -162,7 +164,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
   }
 
   Future<void> _resumeSession(int sessionId, Emitter<TrackerState> emit) async {
-    await LocationForegroundService.start(
+    await _tracker.start(
       sessionId,
       _settings.interval,
       backgroundTracking: _settings.backgroundTracking,
@@ -199,7 +201,7 @@ class TrackerBloc extends Bloc<TrackerEvent, TrackerState> {
     _positionSub = null;
 
     final sessionId = state.mapOrNull(active: (a) => a)?.sessionId;
-    await LocationForegroundService.stop();
+    await _tracker.stop();
     if (sessionId != null) await _db.closeSession(sessionId);
   }
 
