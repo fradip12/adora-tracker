@@ -14,7 +14,9 @@ Guided first-launch flow that walks the user through granting the required permi
 - Introduction slides
 - Step-by-step permission wizard (location, notification, battery optimisation)
 
-> 📹 _Screen recording placeholder — Onboarding flow_
+https://github.com/user-attachments/assets/1205a777-d98b-4b1f-aaf4-24abf5fd640e
+
+
 
 ---
 
