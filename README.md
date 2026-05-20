@@ -98,7 +98,7 @@ Live status of Location, Notification, and Battery Optimisation permissions with
 
 #### Language
 
-Switch the app language. Supported locales: English, French, Indonesian, Japanese, Korean, Burmese, Russian, Simplified Chinese.
+Switch the app language. Supported locales: English, Japanese.
 
 > https://github.com/user-attachments/assets/85294a24-e96c-4aa7-b8e1-5d9bf615f7a3
 
