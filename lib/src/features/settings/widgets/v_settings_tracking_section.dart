@@ -14,6 +14,7 @@ class SettingsTrackingSection extends StatelessWidget {
     required this.backgroundTracking,
     required this.terminatedState,
     required this.persistentNotification,
+    required this.showTerminatedState,
     required this.onIntervalChanged,
     required this.onToggleBackgroundTracking,
     required this.onToggleTerminatedState,
@@ -25,6 +26,7 @@ class SettingsTrackingSection extends StatelessWidget {
   final bool backgroundTracking;
   final bool terminatedState;
   final bool persistentNotification;
+  final bool showTerminatedState;
   final ValueChanged<TrackingInterval> onIntervalChanged;
   final VoidCallback onToggleBackgroundTracking;
   final VoidCallback onToggleTerminatedState;
@@ -65,14 +67,15 @@ class SettingsTrackingSection extends StatelessWidget {
           trailing: _switch(backgroundTracking, onToggleBackgroundTracking),
         ),
 
-        SettingsRow(
-          icon: LucideIcons.bookmark,
-          iconBgColor: AppColors.primaryLight,
-          iconColor: AppColors.primaryDark,
-          name: context.t.settings.terminatedState,
-          description: context.t.settings.terminatedStateDesc,
-          trailing: _switch(terminatedState, onToggleTerminatedState),
-        ),
+        if (showTerminatedState)
+          SettingsRow(
+            icon: LucideIcons.bookmark,
+            iconBgColor: AppColors.primaryLight,
+            iconColor: AppColors.primaryDark,
+            name: context.t.settings.terminatedState,
+            description: context.t.settings.terminatedStateDesc,
+            trailing: _switch(terminatedState, onToggleTerminatedState),
+          ),
 
         SettingsRow(
           icon: LucideIcons.layoutList,

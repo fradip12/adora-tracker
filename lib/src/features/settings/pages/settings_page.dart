@@ -6,6 +6,7 @@ import '../../../../i18n/strings.g.dart';
 import '../../../core/components/theme/app_colors.dart';
 import '../../../core/components/theme/app_spacing.dart';
 import '../../../core/config/app_di.dart';
+import '../../../data/tracker/services/tracker_service.dart';
 import '../../root/widgets/c_pill_nav_bar.dart';
 import '../managers/settings_bloc.dart';
 import '../widgets/c_battery_warning_box.dart';
@@ -96,6 +97,8 @@ class _SettingsViewState extends State<_SettingsView>
                     terminatedState: active?.terminatedState ?? false,
                     persistentNotification:
                         active?.persistentNotification ?? true,
+                    showTerminatedState:
+                        locator<TrackerService>().supportsTerminatedState,
                     onIntervalChanged: (v) => context.read<SettingsBloc>().add(
                       SettingsEvent.updateInterval(v),
                     ),
