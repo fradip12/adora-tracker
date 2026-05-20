@@ -1,9 +1,23 @@
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'dart:async';
+import 'dart:io';
 
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+import 'package:geolocator/geolocator.dart';
+
+import '../../../core/config/app_di.dart';
+import '../../../core/data/database/app_database.dart';
 import '../../settings/enums/tracking_interval.dart';
+import '../enums/gps_accuracy.dart';
 import '../workers/location_foreground_task.dart';
 
 class LocationForegroundService {
+  static bool get supportsTerminatedState => !Platform.isIOS;
+
+  static StreamSubscription<Position>? _iosSub;
+  static int? _iosSessionId;
+  static Duration _iosInterval = const Duration(seconds: 5);
+  static DateTime _iosLastInsertAt = DateTime.fromMillisecondsSinceEpoch(0);
+
   static void _configure({
     required TrackingInterval interval,
     required bool terminatedState,
@@ -18,7 +32,8 @@ class LocationForegroundService {
         eventAction: ForegroundTaskEventAction.repeat(
           interval.duration.inMilliseconds,
         ),
-        autoRunOnBoot: terminatedState,
+        autoRunOnBoot: terminatedState && !Platform.isIOS,
+        allowWifiLock: true,
       ),
     );
   }
@@ -40,11 +55,23 @@ class LocationForegroundService {
     required bool terminatedState,
   }) async {
     await FlutterForegroundTask.requestNotificationPermission();
-    _configure(interval: interval, terminatedState: terminatedState);
+    _configure(
+      interval: interval,
+      terminatedState: terminatedState && supportsTerminatedState,
+    );
     await FlutterForegroundTask.saveData(
-      key: 'session_id',
+      key: kSessionIdKey,
       value: sessionId.toString(),
     );
+    await FlutterForegroundTask.saveData(
+      key: kIntervalMsKey,
+      value: interval.duration.inMilliseconds,
+    );
+
+    if (Platform.isIOS) {
+      await _startIosStream(sessionId, interval);
+    }
+
     return FlutterForegroundTask.startService(
       serviceId: 256,
       notificationTitle: 'Adora',
@@ -59,6 +86,48 @@ class LocationForegroundService {
   static Future<void> updateNotification(String text) =>
       FlutterForegroundTask.updateService(notificationText: text);
 
-  static Future<ServiceRequestResult> stop() =>
-      FlutterForegroundTask.stopService();
+  static Future<ServiceRequestResult> stop() async {
+    await _stopIosStream();
+    return FlutterForegroundTask.stopService();
+  }
+
+  static Future<void> _startIosStream(
+    int sessionId,
+    TrackingInterval interval,
+  ) async {
+    await _iosSub?.cancel();
+    _iosSessionId = sessionId;
+    _iosInterval = interval.duration;
+    _iosLastInsertAt = DateTime.fromMillisecondsSinceEpoch(0);
+    _iosSub = Geolocator.getPositionStream(
+      locationSettings: AppleSettings(
+        accuracy: LocationAccuracy.high,
+        activityType: ActivityType.fitness,
+        showBackgroundLocationIndicator: true,
+      ),
+    ).listen(_onIosPosition, onError: (_) {});
+  }
+
+  static Future<void> _stopIosStream() async {
+    await _iosSub?.cancel();
+    _iosSub = null;
+    _iosSessionId = null;
+  }
+
+  static Future<void> _onIosPosition(Position position) async {
+    final now = DateTime.now();
+    if (now.difference(_iosLastInsertAt) < _iosInterval) return;
+    _iosLastInsertAt = now;
+    final sessionId = _iosSessionId;
+    if (sessionId == null) return;
+    try {
+      final accuracy = GpsAccuracy.fromMeters(position.accuracy);
+      await locator<AppDatabase>().insertCoordinate(
+        parentId: sessionId,
+        latitude: position.latitude,
+        longitude: position.longitude,
+        accuracy: accuracy.name,
+      );
+    } catch (_) {}
+  }
 }
